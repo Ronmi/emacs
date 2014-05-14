@@ -1,0 +1,16 @@
+.achievements
+ac-comphist.dat
+auto-save-list/
+ede-projects.el
+eshell/
+jabber-history/
+oauth2.plstore
+php
+session.*
+snippets/
+tramp
+url/
+var/
+*.elc
+*~
+elpa/archives/
