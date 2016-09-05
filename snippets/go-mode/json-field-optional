@@ -1,0 +1,5 @@
+# -*- mode: snippet -*-
+# name: json-field-optional
+# key: ojf
+# --
+${1:field} ${2:type} \`json:"${3:key},omitempty"\`$0
