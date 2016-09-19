@@ -204,3 +204,8 @@
 
 (el-get-cleanup my:el-get-packages)
 (el-get 'sync my:el-get-packages)
+
+(create-fontset-from-fontset-spec
+ "-unknown-DejaVu Sans Mono-normal-normal-normal-*-16-*-*-*-m-0-fontset-myfontset")
+(set-fontset-font "fontset-myfontset" 'han (font-spec :family "WenQuanYi Micro Hei Mono" :size 20))
+(add-to-list 'default-frame-alist '(font . "fontset-myfontset"))
