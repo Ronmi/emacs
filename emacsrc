@@ -10,7 +10,6 @@
  '(custom-enabled-themes (quote (tsdh-dark)))
  '(display-time-24hr-format t)
  '(display-time-day-and-date t)
- '(flycheck-go-gofmt-executable "/home/ronmi/go/bin/goimports")
  '(inhibit-startup-screen t)
  '(js-indent-level 2)
  '(js-switch-indent-offset 2)
@@ -55,6 +54,8 @@
 (setq
  el-get-sources
  '(
+   (:name flycheck
+   	  :after (global-flycheck-mode))
    ;; git
    (:name magit-filenotify
 	  :after (add-hook 'magit-status-mode-hook #'magit-filenotify-mode))
@@ -65,9 +66,10 @@
 		   (add-hook 'go-mode-hook
 			     (progn
 			       (auto-complete-mode t)
-			       (flycheck-mode t)
+			       (flycheck-mode)
 			       (yas-global-mode t)))
-		   (customize-set-variable 'gofmt-command "goimports")
+		   (custom-set-variables '(gofmt-command "goimports")
+					 '(flycheck-go-gofmt-executable "goimports"))
 		   (setq go-packages-function 'go-packages-go-list
 			 go-play-browse-function 'browse-url)
 		   (add-hook 'before-save-hook #'gofmt-before-save)))
@@ -88,7 +90,7 @@
 		   (add-hook 'php-mode-hook
 			     (progn
 			       (auto-complete-mode t)
-			       (flycheck-mode t)
+			       (flycheck-mode)
 			       (yas-global-mode t)))))
    (:name php-extras :depends (php-mode)
 	  :type github :pkgname "arnested/php-extras"
