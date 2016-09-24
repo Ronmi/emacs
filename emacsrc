@@ -67,9 +67,9 @@
 			       (auto-complete-mode t)
 			       (flycheck-mode t)
 			       (yas-global-mode t)))
+		   (customize-set-variable 'gofmt-command "goimports")
 		   (setq go-packages-function 'go-packages-go-list
-			 go-play-browse-function 'browse-url
-			 gofmt-command "/home/ronmi/go/bin/goimports")
+			 go-play-browse-function 'browse-url)
 		   (add-hook 'before-save-hook #'gofmt-before-save)))
    (:name go-eldoc
 	  :after (add-hook 'go-mode-hook #'go-eldoc-setup))
