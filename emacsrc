@@ -99,12 +99,10 @@
 	  :type github :pkgname "nishimaki10/emacs-phpcbf")
    (:name php-boris :depends (php-mode)
 	  :type github :pkgname "tomterl/php-boris")
-   ;; (:name ac-php
-   ;; 	  :after (progn
-   ;; 		   (add-hook 'php-mode-hook
-   ;; 		   	     (progn
-   ;; 			       (auto-complete-mode t)
-   ;; 			       (setq ac-sources '(ac-source-php))))))
+
+   ;; html
+   (:name emmet-mode
+	  :after (add-hook 'html-mode-hook #'emmet-mode))
 
    ;; typescript and javascript
    (:name tide
