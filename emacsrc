@@ -31,8 +31,8 @@
  ;; If there is more than one, they won't work right.
  )
 
-(setenv "GOPATH" (getenv "GOPATH"))
-(setenv "GOROOT" (getenv "GOROOT"))
+(setenv "GOPATH" (concat (getenv "HOME") "/go"))
+(setenv "GOROOT" (concat (getenv "HOME") "/goroot"))
 (setenv "PATH" (concat (getenv "GOROOT") "/bin:"
 		       (getenv "GOPATH") "/bin:"
 		       (getenv "HOME") "/bin:"
