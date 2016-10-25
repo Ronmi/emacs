@@ -57,6 +57,8 @@
    (:name flycheck
    	  :after (global-flycheck-mode))
    ;; git
+   (:name magit
+	  :after (global-set-key (kbd "C-c C-a") 'magit-status))
    (:name magit-filenotify
 	  :after (add-hook 'magit-status-mode-hook #'magit-filenotify-mode))
 
