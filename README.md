@@ -53,5 +53,5 @@ echo '<?php echo file_get_contents("https://raw.githubusercontent.com/Ronmi/emac
 ### With node.js
 
 ```sh
-echo 'var https=require("https");https.get("https://raw.githubusercontent.com/Ronmi/emacs/master/install.sh", (r) => {r.on("data", (d) => {process.stdout.write(d);});});' | node | bash
+echo 'require("https").get("https://raw.githubusercontent.com/Ronmi/emacs/master/install.sh", (r) => {r.on("data", (d) => {process.stdout.write(d);});});' | node | bash
 ```
