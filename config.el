@@ -11,8 +11,8 @@
  '(display-time-24hr-format t)
  '(display-time-day-and-date t)
  '(inhibit-startup-screen t)
- '(js-indent-level 2)
- '(js-switch-indent-offset 2)
+ '(js-indent-level 4)
+ '(js-switch-indent-offset 4)
  '(make-backup-files nil)
  '(package-archives
    (quote
