@@ -134,6 +134,8 @@
 		   	         (setq indent-tabs-mode nil))))))
 
    ;; misc modes
+   (:name go-autocomplete
+	  :after (ac-config-default))
    (:name projectile
 	  :after (projectile-global-mode t))
    (:name nginx-mode
