@@ -10,6 +10,8 @@
  '(custom-enabled-themes (quote (tsdh-dark)))
  '(display-time-24hr-format t)
  '(display-time-day-and-date t)
+ '(flycheck-go-gofmt-executable "goimports")
+ '(gofmt-command "goimports")
  '(inhibit-startup-screen t)
  '(js-indent-level 4)
  '(js-switch-indent-offset 4)
@@ -132,6 +134,8 @@
 		   	         (setq indent-tabs-mode nil))))))
 
    ;; misc modes
+   (:name projectile
+	  :after (projectile-global-mode t))
    (:name nginx-mode
 	  :type github :pkgname "ajc/nginx-mode")
    (:name markdown-mode+  :depends (markdown-mode)
