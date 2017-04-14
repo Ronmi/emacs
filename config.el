@@ -25,7 +25,10 @@
  '(phpcbf-standard "PSR2")
  '(size-indication-mode t)
  '(typescript-enabled-frameworks (quote (typescript)))
- '(typescript-indent-level 4))
+ '(typescript-indent-level 4)
+ '(weblogger-config-alist
+   (quote
+    (("office" "http://wp.office.rde/xmlrpc.php" "ronmi" "" "1")))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
@@ -208,6 +211,8 @@
    markdown-mode+
 
    ;; misc tools
+   xml-rpc-el
+   weblogger-el
    restclient))
 
 (el-get-cleanup my:el-get-packages)
