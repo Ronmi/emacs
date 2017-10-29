@@ -46,10 +46,10 @@
  ;; If there is more than one, they won't work right.
  )
 
-(set-fontset-font "fontset-default" 'ascii (font-spec :family "DejaVu Sans Mono" :size 16))
-(set-fontset-font "fontset-default" 'han (font-spec :family "WenQuanYi Micro Hei Mono" :size 20))
-(set-fontset-font "fontset-startup" 'ascii (font-spec :family "DejaVu Sans Mono" :size 16))
-(set-fontset-font "fontset-startup" 'han (font-spec :family "WenQuanYi Micro Hei Mono" :size 20))
+;; demo zh_TW: 示範文字示範文字:示範;文字 english()#[]-+_ 示範文字示範文字示範文字简体中文
+;; 英文對照組: o01I223344556677:8899;0Oaa english()#[]-+_ bbccddeeffgghhiijjkk1lmmnnOoppqq
+(set-fontset-font "fontset-startup" 'latin (font-spec :family "DejaVu Sans Mono" :size 18))
+(set-fontset-font "fontset-startup" 'han (font-spec :family "WenQuanYi Micro Hei Mono" :size 22))
 
 (setenv "GOPATH" (concat (getenv "HOME") "/go"))
 (setenv "GOROOT" (concat (getenv "HOME") "/goroot"))
