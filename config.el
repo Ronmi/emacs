@@ -46,8 +46,10 @@
  ;; If there is more than one, they won't work right.
  )
 
-(set-fontset-font "fontset-default" nil (font-spec :family "DejaVu Sans Mono" :size 16))
+(set-fontset-font "fontset-default" 'ascii (font-spec :family "DejaVu Sans Mono" :size 16))
 (set-fontset-font "fontset-default" 'han (font-spec :family "WenQuanYi Micro Hei Mono" :size 20))
+(set-fontset-font "fontset-startup" 'ascii (font-spec :family "DejaVu Sans Mono" :size 16))
+(set-fontset-font "fontset-startup" 'han (font-spec :family "WenQuanYi Micro Hei Mono" :size 20))
 
 (setenv "GOPATH" (concat (getenv "HOME") "/go"))
 (setenv "GOROOT" (concat (getenv "HOME") "/goroot"))
