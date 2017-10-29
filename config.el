@@ -1,3 +1,10 @@
+
+;; Added by Package.el.  This must come before configurations of
+;; installed packages.  Don't delete this line.  If you don't want it,
+;; just comment it out by adding a semicolon to the start of the line.
+;; You may delete these explanatory comments.
+(package-initialize)
+
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
@@ -10,6 +17,7 @@
  '(custom-enabled-themes (quote (tsdh-dark)))
  '(display-time-24hr-format t)
  '(display-time-day-and-date t)
+ '(ediff-window-setup-function ediff-window-setup-plain)
  '(flycheck-go-gofmt-executable "goimports")
  '(gofmt-command "goimports")
  '(inhibit-startup-screen t)
@@ -24,11 +32,13 @@
  '(php-mode-coding-style (quote psr2))
  '(phpcbf-standard "PSR2")
  '(size-indication-mode t)
+ '(smerge-refine-ignore-whitespace t t)
  '(typescript-enabled-frameworks (quote (typescript)))
  '(typescript-indent-level 4)
  '(weblogger-config-alist
    (quote
-    (("office" "http://wp.office.rde/xmlrpc.php" "ronmi" "" "1")))))
+    (("81k" "https://81k.today/xmlrpc.php" "ronmi" "" "1")
+     ("food" "https://food.ronmi.tw/xmlrpc.php" "ronmi" "" "1")))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
@@ -36,15 +46,18 @@
  ;; If there is more than one, they won't work right.
  )
 
+(set-fontset-font "fontset-default" nil (font-spec :family "DejaVu Sans Mono" :size 16))
+(set-fontset-font "fontset-default" 'han (font-spec :family "WenQuanYi Micro Hei Mono" :size 20))
+
 (setenv "GOPATH" (concat (getenv "HOME") "/go"))
 (setenv "GOROOT" (concat (getenv "HOME") "/goroot"))
-(setenv "PATH" (concat (getenv "GOROOT") "/bin:"
-		       (getenv "GOPATH") "/bin:"
-		       (getenv "HOME") "/bin:"
-		       (getenv "PATH")))
-(setq exec-path (append (list (concat (getenv "GOROOT") "/bin")
-			  (concat (getenv "GOPATH") "/bin")
-			  (concat (getenv "HOME") "/bin")) exec-path))
+;; (setenv "PATH" (concat (getenv "GOROOT") "/bin:"
+;; 		       (getenv "GOPATH") "/bin:"
+;; 		       (getenv "HOME") "/bin:"
+;; 		       (getenv "PATH")))
+;; (setq exec-path (append (list (concat (getenv "GOROOT") "/bin")
+;; 			  (concat (getenv "GOPATH") "/bin")
+;; 			  (concat (getenv "HOME") "/bin")) exec-path))
 
 (add-to-list 'load-path "~/.emacs.d/el-get/el-get")
 
@@ -61,6 +74,11 @@
  '(
    (:name flycheck
    	  :after (global-flycheck-mode))
+   (:name exec-path-from-shell
+	  :after (progn
+		   (setq exec-path-from-shell-variables
+			 (quote ("PATH" "GOPATH" "GOROOT")))
+		   (exec-path-from-shell-initialize)))
    ;; git
    (:name magit
 	  :after (global-set-key (kbd "C-c C-a") 'magit-status))
@@ -159,11 +177,13 @@
    flycheck
    projectile
    xcscope
+   exec-path-from-shell
 
    ;; git
    magit
    magit-filenotify
    magit-tramp
+   with-editor ; magit dep
 
    ;; golang
    go-mode
@@ -217,8 +237,3 @@
 
 (el-get-cleanup my:el-get-packages)
 (el-get 'sync my:el-get-packages)
-
-(create-fontset-from-fontset-spec
- "-unknown-DejaVu Sans Mono-normal-normal-normal-*-16-*-*-*-m-0-fontset-myfontset")
-(set-fontset-font "fontset-myfontset" 'han (font-spec :family "WenQuanYi Micro Hei Mono" :size 20))
-(add-to-list 'default-frame-alist '(font . "fontset-myfontset"))
