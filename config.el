@@ -10,8 +10,11 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
+ '(anaconda-mode-eldoc-as-single-line nil)
  '(ansi-color-names-vector
    ["#212526" "#ff4b4b" "#b4fa70" "#fce94f" "#729fcf" "#e090d7" "#8cc4ff" "#eeeeec"])
+ '(autopep8-args " -")
+ '(autopep8-path "/home/ronmi/.py/bin/autopep8")
  '(calendar-chinese-all-holidays-flag t)
  '(column-number-mode t)
  '(custom-enabled-themes (quote (tsdh-dark)))
@@ -19,9 +22,11 @@
  '(display-time-day-and-date t)
  '(ediff-window-setup-function ediff-window-setup-plain)
  '(flycheck-go-gofmt-executable "goimports")
+ '(flycheck-json-python-json-executable "/usr/bin/python3")
+ '(flycheck-python-pycompile-executable "/usr/bin/python3")
  '(gofmt-command "goimports")
  '(inhibit-startup-screen t)
- '(js-indent-level 4)
+ '(js-indent-level 2)
  '(js-switch-indent-offset 4)
  '(make-backup-files nil)
  '(package-archives
@@ -31,6 +36,22 @@
  '(php-boris-command "boris.phar")
  '(php-mode-coding-style (quote psr2))
  '(phpcbf-standard "PSR2")
+ '(python-check-command "/usr/bin/pyflakes3")
+ '(python-shell-interpreter "/usr/bin/python3")
+ '(pyvenv-virtualenvwrapper-python "/usr/bin/python3")
+ '(safe-local-variable-values
+   (quote
+    ((python-shell-interpreter . "python")
+     (python-shell-virtualenv-root . "/home/ronmi/play/python/ordering/env")
+     (python-shell-virtualenv-root . "../env")
+     (pyvenv-activate . "../env")
+     (python-shell-interpreter-args . "manage.py shell")
+     (python-shell-interpreter . "../env/bin/python3")
+     (python-shell-interpreter . "python3")
+     (python-shell-interpreter . "./env/bin/python3")
+     (python-shell-interpreter . "env/bin/python3")
+     (python-shell-virtualenv-path . "env")
+     (pyvenv-activate . "env"))))
  '(size-indication-mode t)
  '(smerge-refine-ignore-whitespace t t)
  '(typescript-enabled-frameworks (quote (typescript)))
@@ -109,7 +130,7 @@
    (:name go-autocomplete :depends (go-mode)
 	  :type github :pkgname "nsf/gocode"
 	  :load-path ("emacs"))
-   
+
    ;; php
    (:name php-mode
 	  :after (progn
@@ -156,6 +177,13 @@
 		   	         (add-to-list 'write-file-functions 'delete-trailing-whitespace)
 		   	         (setq indent-tabs-mode nil))))))
 
+   ;; python and elpy
+   (:name anaconda-mode
+	  :after (progn
+		   (add-hook 'python-mode-hook (lambda ()
+						 (anaconda-mode t)
+						 (anaconda-eldoc-mode t)))))
+
    ;; misc modes
    (:name go-autocomplete
 	  :after (ac-config-default))
@@ -172,7 +200,7 @@
 
 (setq
  my:el-get-packages
- '(el-get 
+ '(el-get
    ;; common tools
    auto-complete
    yasnippet
@@ -225,6 +253,19 @@
    ;; css tools
    css-eldoc
    css-palette
+
+   ;; python
+   anaconda-mode
+   python-django
+   virtualenvwrapper
+   ropemacs
+   autopep8
+   pydoc-info
+   pip-requirements
+
+   ;; protobuf
+   protobuf-mode
+   flycheck-protobuf
 
    ;; misc mode
    nginx-mode
