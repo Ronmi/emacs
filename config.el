@@ -23,6 +23,7 @@
  '(ediff-window-setup-function ediff-window-setup-plain)
  '(flycheck-go-gofmt-executable "goimports")
  '(flycheck-json-python-json-executable "/usr/bin/python3")
+ '(flycheck-phpcs-standard "PSR2")
  '(flycheck-python-pycompile-executable "/usr/bin/python3")
  '(gofmt-command "goimports")
  '(inhibit-startup-screen t)
@@ -113,7 +114,7 @@
 	  :after (progn
 		   (add-hook 'go-mode-hook
 			     (progn
-			       (auto-complete-mode t)
+			       (company-mode t)
 			       (flycheck-mode)
 			       (yas-global-mode t)))
 		   (custom-set-variables '(gofmt-command "goimports")
@@ -127,9 +128,9 @@
 	  :type github :pkgname "golang/tools"
 	  :load-path ("cmd/guru")
 	  :after (add-hook 'go-mode-hook #'go-guru-hl-identifier-mode))
-   (:name go-autocomplete :depends (go-mode)
-	  :type github :pkgname "nsf/gocode"
-	  :load-path ("emacs"))
+   (:name go-company :depends (go-mode)
+	  :type github :pkgname "stamblerre/gocode"
+	  :load-path ("emacs-company"))
 
    ;; php
    (:name php-mode
@@ -137,7 +138,7 @@
 		   (setq flycheck-phpcs-standard "PSR-2")
 		   (add-hook 'php-mode-hook
 			     (progn
-			       (auto-complete-mode t)
+			       (company-mode t)
 			       (flycheck-mode)
 			       (yas-global-mode t)))))
    (:name php-extras :depends (php-mode)
@@ -163,7 +164,7 @@
 			       (tide-setup)
 			       (eldoc-mode t)
 			       (flycheck-mode t)
-			       (auto-complete-mode t)
+			       (company-mode t)
 			       (add-to-list 'write-file-functions 'delete-trailing-whitespace)
 			       (setq indent-tabs-mode nil)))
 		   (add-hook 'web-mode-hook
@@ -173,20 +174,11 @@
 		   	         (tide-mode t)
 		   	         (tide-setup)
 		   	         (eldoc-mode t)
-		   	         (auto-complete-mode t)
+		   	         (company-mode t)
 		   	         (add-to-list 'write-file-functions 'delete-trailing-whitespace)
 		   	         (setq indent-tabs-mode nil))))))
 
-   ;; python and elpy
-   (:name anaconda-mode
-	  :after (progn
-		   (add-hook 'python-mode-hook (lambda ()
-						 (anaconda-mode t)
-						 (anaconda-eldoc-mode t)))))
-
    ;; misc modes
-   (:name go-autocomplete
-	  :after (ac-config-default))
    (:name projectile
 	  :after (projectile-global-mode t))
    (:name nginx-mode
@@ -202,7 +194,7 @@
  my:el-get-packages
  '(el-get
    ;; common tools
-   auto-complete
+   company-mode
    yasnippet
    flycheck
    projectile
@@ -220,7 +212,7 @@
    go-guru
    go-eldoc
    go-errcheck
-   go-autocomplete
+   go-company
    go-projectile
 
    ;; php
@@ -237,7 +229,7 @@
 
    ;; html
    web-mode
-   ac-html
+   company-web
    emmet-mode
    web-mode-extension
 
@@ -254,18 +246,8 @@
    css-eldoc
    css-palette
 
-   ;; python
-   anaconda-mode
-   python-django
-   virtualenvwrapper
-   ropemacs
-   autopep8
-   pydoc-info
-   pip-requirements
-
    ;; protobuf
    protobuf-mode
-   flycheck-protobuf
 
    ;; misc mode
    nginx-mode
