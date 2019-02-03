@@ -27,8 +27,9 @@
  '(flycheck-python-pycompile-executable "/usr/bin/python3")
  '(go-eldoc-gocode-args (quote ("-cache")))
  '(gofmt-command "goimports")
+ '(indent-tabs-mode nil)
  '(inhibit-startup-screen t)
- '(js-indent-level 2)
+ '(js-indent-level 4)
  '(js-switch-indent-offset 4)
  '(make-backup-files nil)
  '(package-archives
