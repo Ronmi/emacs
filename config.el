@@ -25,6 +25,7 @@
  '(flycheck-json-python-json-executable "/usr/bin/python3")
  '(flycheck-phpcs-standard "PSR2")
  '(flycheck-python-pycompile-executable "/usr/bin/python3")
+ '(go-eldoc-gocode-args (quote ("-cache")))
  '(gofmt-command "goimports")
  '(inhibit-startup-screen t)
  '(js-indent-level 2)
@@ -124,10 +125,6 @@
 		   (add-hook 'before-save-hook #'gofmt-before-save)))
    (:name go-eldoc
 	  :after (add-hook 'go-mode-hook #'go-eldoc-setup))
-   (:name go-guru :depends (go-mode)
-	  :type github :pkgname "golang/tools"
-	  :load-path ("cmd/guru")
-	  :after (add-hook 'go-mode-hook #'go-guru-hl-identifier-mode))
    (:name go-company :depends (go-mode)
 	  :type github :pkgname "stamblerre/gocode"
 	  :load-path ("emacs-company"))
@@ -179,8 +176,6 @@
 		   	         (setq indent-tabs-mode nil))))))
 
    ;; misc modes
-   (:name projectile
-	  :after (projectile-global-mode t))
    (:name nginx-mode
 	  :type github :pkgname "ajc/nginx-mode")
    (:name markdown-mode+  :depends (markdown-mode)
@@ -197,7 +192,6 @@
    company-mode
    yasnippet
    flycheck
-   projectile
    xcscope
    exec-path-from-shell
 
@@ -209,11 +203,8 @@
 
    ;; golang
    go-mode
-   go-guru
    go-eldoc
-   go-errcheck
    go-company
-   go-projectile
 
    ;; php
    php-mode
