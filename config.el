@@ -78,7 +78,6 @@
 (set-fontset-font "fontset-startup" 'han (font-spec :family "WenQuanYi Micro Hei Mono" :size 22))
 
 (setenv "GOPATH" (concat (getenv "HOME") "/go"))
-(setenv "GOROOT" (concat (getenv "HOME") "/goroot"))
 ;; (setenv "PATH" (concat (getenv "GOROOT") "/bin:"
 ;; 		       (getenv "GOPATH") "/bin:"
 ;; 		       (getenv "HOME") "/bin:"
