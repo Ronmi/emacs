@@ -22,7 +22,7 @@
  '(display-time-day-and-date t)
  '(ediff-window-setup-function ediff-window-setup-plain)
  '(flycheck-go-gofmt-executable "goimports")
- '(flycheck-go-vet-executable "go tool vet")
+ '(flycheck-go-vet-executable "go vet")
  '(flycheck-go-vet-shadow t)
  '(flycheck-json-python-json-executable "/usr/bin/python3")
  '(flycheck-phpcs-standard "PSR2")
