@@ -178,6 +178,8 @@
 		   	         (setq indent-tabs-mode nil))))))
 
    ;; misc modes
+   (:name jsonnet-mode
+	  :type github :pkgname "mgyucht/jsonnet-mode")
    (:name nginx-mode
 	  :type github :pkgname "ajc/nginx-mode")
    (:name markdown-mode+  :depends (markdown-mode)
@@ -249,6 +251,8 @@
    markdown-mode+
 
    ;; misc tools
+   rust-mode
+   jsonnet-mode
    xml-rpc-el
    weblogger-el
    restclient))
