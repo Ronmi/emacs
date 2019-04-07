@@ -76,6 +76,7 @@
 ;; 英文對照組: o01I223344556677:8899;0Oaa english()#[]-+_ bbccddeeffgghhiijjkk1lmmnnOoppqq
 (set-fontset-font "fontset-startup" 'latin (font-spec :family "DejaVu Sans Mono" :size 18))
 (set-fontset-font "fontset-startup" 'han (font-spec :family "WenQuanYi Micro Hei Mono" :size 22))
+(add-to-list 'default-frame-alist '(font . "fontset-startup"))
 
 (setenv "GOPATH" (concat (getenv "HOME") "/go"))
 ;; (setenv "PATH" (concat (getenv "GOROOT") "/bin:"
