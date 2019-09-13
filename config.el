@@ -117,6 +117,8 @@
 		   (setq exec-path-from-shell-variables
 			 (quote ("PATH" "GOPATH" "GOROOT")))
 		   (exec-path-from-shell-initialize)))
+   (:name yasnippet
+          :after (yas-global-mode t))
 
    ;; treemacs
    (:name pfuture
@@ -143,13 +145,17 @@
           :type github
           :pkgname "emacs-lsp/dap-mode")
    (:name lsp-mode
-          :after (add-hook 'lsp-mode-hook (lambda ()
-                   (define-key lsp-mode-map (kbd "C-c s d") #'lsp-find-definition)
-                   (define-key lsp-mode-map (kbd "C-c s r") #'lsp-find-references)
-                   (define-key lsp-mode-map (kbd "C-c g t") #'lsp-goto-type-definition)
-                   (define-key lsp-mode-map (kbd "C-c g i") #'lsp-goto-implementation)
-                   (define-key lsp-mode-map (kbd "C-c f i") #'lsp-organize-imports)
-                   (define-key lsp-mode-map (kbd "C-c f f") #'lsp-format-buffer))))
+          :after (progn
+                   (add-hook 'js-mode-hook #'lsp-deferred)
+                   (add-hook 'html-mode-hook #'lsp-deferred)
+                   (add-hook 'lsp-mode-hook
+                             (lambda ()
+                               (define-key lsp-mode-map (kbd "C-c s d") #'lsp-find-definition)
+                               (define-key lsp-mode-map (kbd "C-c s r") #'lsp-find-references)
+                               (define-key lsp-mode-map (kbd "C-c g t") #'lsp-goto-type-definition)
+                               (define-key lsp-mode-map (kbd "C-c g i") #'lsp-goto-implementation)
+                               (define-key lsp-mode-map (kbd "C-c f i") #'lsp-organize-imports)
+                               (define-key lsp-mode-map (kbd "C-c f f") #'lsp-format-buffer)))))
    (:name lsp-treemacs
           :type github :pkgname "emacs-lsp/lsp-treemacs")
    
@@ -168,7 +174,7 @@
                                (lsp-ui-mode t)
 			       (company-mode t)
 			       (flycheck-mode)
-			       (yas-global-mode t)))
+			       (yas-minor-mode t)))
 		   (custom-set-variables '(gofmt-command "goimports")
 					 '(flycheck-go-gofmt-executable "goimports"))
 		   (setq go-packages-function 'go-packages-go-list
@@ -179,12 +185,13 @@
    (:name php-mode
 	  :after (progn
 		   (setq flycheck-phpcs-standard "PSR-2")
+                   (add-hook 'php-mode-hook #'lsp-deferred)
 		   (add-hook 'php-mode-hook
 			     (lambda ()
-                               (lsp-deferred)
+                               (lsp-ui-mode t)
 			       (company-mode t)
 			       (flycheck-mode)
-			       (yas-global-mode t)))))
+			       (yas-minor-mode t)))))
    (:name php-extras :depends (php-mode)
 	  :type github :pkgname "arnested/php-extras"
 	  :after (add-hook 'php-mode-hook #'eldoc-mode))
@@ -192,6 +199,34 @@
 	  :type github :pkgname "nishimaki10/emacs-phpcbf")
    (:name php-boris :depends (php-mode)
 	  :type github :pkgname "tomterl/php-boris")
+
+   ;; js
+   (:name typescript-mode
+          :after (progn
+                   (add-hook 'typescript-mode-hook #'lsp)
+		   (add-hook 'typescript-mode-hook
+			     (lambda ()
+			       (yas-minor-mode t)
+			       (company-mode t)
+			       (flycheck-mode)
+                               (lsp-ui-mode t)))))
+   (:name edit-indirect
+          :type github :pkgname "Fanael/edit-indirect")
+   (:name ssass-mode
+          :type github :pkgname "AdamNiederer/ssass-mode")
+   (:name vue-html-mode
+          :type github :pkgname "AdamNiederer/vue-html-mode")
+   (:name vue-mode :depends (mmm-mode edit-indirect vue-html-mode ssass-mode)
+          :type github :pkgname "AdamNiederer/vue-mode"
+          :after (progn
+                   (add-hook 'vue-mode-hook #'lsp)
+		   (add-hook 'vue-mode-hook
+			     (lambda ()
+			       (yas-minor-mode t)
+			       (company-mode t)
+			       (flycheck-mode)
+                               (lsp-ui-mode t)))))
+          
 
    ;; html
    (:name emmet-mode
@@ -260,6 +295,7 @@
    json-mode
    json-reformat
    typescript-mode
+   vue-mode
 
    ;; css tools
    css-eldoc
