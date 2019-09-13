@@ -28,11 +28,21 @@
  '(flycheck-phpcs-standard "PSR2")
  '(flycheck-python-pycompile-executable "/usr/bin/python3")
  '(go-eldoc-gocode-args (quote ("-cache")))
+ '(godoc-reuse-buffer t)
  '(gofmt-command "goimports")
  '(indent-tabs-mode nil)
  '(inhibit-startup-screen t)
  '(js-indent-level 4)
  '(js-switch-indent-offset 4)
+ '(lsp-clients-go-server "gopls")
+ '(lsp-eldoc-render-all nil)
+ '(lsp-prefer-flymake nil)
+ '(lsp-ui-doc-header t)
+ '(lsp-ui-doc-include-signature t)
+ '(lsp-ui-doc-position (quote top))
+ '(lsp-ui-doc-use-childframe t)
+ '(lsp-ui-doc-use-webkit nil)
+ '(lsp-ui-flycheck-enable t)
  '(make-backup-files nil)
  '(package-archives
    (quote
@@ -107,6 +117,42 @@
 		   (setq exec-path-from-shell-variables
 			 (quote ("PATH" "GOPATH" "GOROOT")))
 		   (exec-path-from-shell-initialize)))
+
+   ;; treemacs
+   (:name pfuture
+          :type github :pkgname "Alexander-Miller/pfuture")
+   (:name treemacs
+          :type github :pkgname "Alexander-Miller/treemacs"
+          :depends (f s dash cl-lib ace-window pfuture ht hydra)
+          :load-path ("./src/elisp" "./src/extra")
+          :after (progn
+                   (add-hook 'treemacs-mode-hook
+                             (lambda ()
+                               (treemacs-follow-mode t)
+                               (treemacs-filewatch-mode t)))
+                   (global-set-key (kbd "C-x t 1") 'treemacs-delete-other-windows)
+                   (global-set-key (kbd "C-x t B") 'treemacs-bookmark)
+                   (global-set-key (kbd "C-x t C-f") 'treemacs-find-file)
+                   (global-set-key (kbd "C-x t M-t") 'treemacs-find-tag)
+                   (global-set-key (kbd "C-x t t") 'treemacs)))
+
+   ;; lsp
+   (:name dap-mode
+          :website "https://github.com/emacs-lsp/dap-mode"
+          :description "Emacs client/library for the Debugger Adaptor Protocol"
+          :type github
+          :pkgname "emacs-lsp/dap-mode")
+   (:name lsp-mode
+          :after (add-hook 'lsp-mode-hook (lambda ()
+                   (define-key lsp-mode-map (kbd "C-c s d") #'lsp-find-definition)
+                   (define-key lsp-mode-map (kbd "C-c s r") #'lsp-find-references)
+                   (define-key lsp-mode-map (kbd "C-c g t") #'lsp-goto-type-definition)
+                   (define-key lsp-mode-map (kbd "C-c g i") #'lsp-goto-implementation)
+                   (define-key lsp-mode-map (kbd "C-c f i") #'lsp-organize-imports)
+                   (define-key lsp-mode-map (kbd "C-c f f") #'lsp-format-buffer))))
+   (:name lsp-treemacs
+          :type github :pkgname "emacs-lsp/lsp-treemacs")
+   
    ;; git
    (:name magit
 	  :after (global-set-key (kbd "C-c C-a") 'magit-status))
@@ -116,8 +162,10 @@
    ;; golang
    (:name go-mode
 	  :after (progn
+                   (add-hook 'go-mode-hook #'lsp-deferred)
 		   (add-hook 'go-mode-hook
-			     (progn
+			     (lambda ()
+                               (lsp-ui-mode t)
 			       (company-mode t)
 			       (flycheck-mode)
 			       (yas-global-mode t)))
@@ -126,18 +174,14 @@
 		   (setq go-packages-function 'go-packages-go-list
 			 go-play-browse-function 'browse-url)
 		   (add-hook 'before-save-hook #'gofmt-before-save)))
-   (:name go-eldoc
-	  :after (add-hook 'go-mode-hook #'go-eldoc-setup))
-   (:name go-company :depends (go-mode)
-	  :type github :pkgname "stamblerre/gocode"
-	  :load-path ("emacs-company"))
 
    ;; php
    (:name php-mode
 	  :after (progn
 		   (setq flycheck-phpcs-standard "PSR-2")
 		   (add-hook 'php-mode-hook
-			     (progn
+			     (lambda ()
+                               (lsp-deferred)
 			       (company-mode t)
 			       (flycheck-mode)
 			       (yas-global-mode t)))))
@@ -151,32 +195,9 @@
 
    ;; html
    (:name emmet-mode
-	  :after (add-hook 'html-mode-hook #'emmet-mode))
-
-   ;; typescript and javascript
-   (:name tide
 	  :after (progn
-		   (add-to-list 'auto-mode-alist '("\\.tsx\\'" . web-mode))
-		   (add-hook 'typescript-mode-hook
-			     (lambda ()
-			       (interactive)
-			       (tide-mode t)
-			       (tide-setup)
-			       (eldoc-mode t)
-			       (flycheck-mode t)
-			       (company-mode t)
-			       (add-to-list 'write-file-functions 'delete-trailing-whitespace)
-			       (setq indent-tabs-mode nil)))
-		   (add-hook 'web-mode-hook
-                             (lambda ()
-		   	       (interactive)
-		   	       (when (string-equal "tsx" (file-name-extension buffer-file-name))
-		   	         (tide-mode t)
-		   	         (tide-setup)
-		   	         (eldoc-mode t)
-		   	         (company-mode t)
-		   	         (add-to-list 'write-file-functions 'delete-trailing-whitespace)
-		   	         (setq indent-tabs-mode nil))))))
+                   (add-hook 'html-mode-hook #'emmet-mode)
+                   (add-hook 'web-mode-hook #'emmet-mode)))
 
    ;; misc modes
    (:name jsonnet-mode
@@ -184,8 +205,7 @@
    (:name nginx-mode
 	  :type github :pkgname "ajc/nginx-mode")
    (:name markdown-mode+  :depends (markdown-mode)
-	  :type github :pkgname "milkypostman/markdown-mode-plus")
-   ))
+	  :type github :pkgname "milkypostman/markdown-mode-plus")))
 
 ;; fix elpa bug
 (setq package-check-signature nil)
@@ -200,6 +220,14 @@
    xcscope
    exec-path-from-shell
 
+   ;; lsp and treemacs
+   treemacs
+   lsp-mode
+   dap-mode
+   lsp-ui
+   company-lsp
+   lsp-treemacs
+
    ;; git
    magit
    magit-filenotify
@@ -208,7 +236,6 @@
 
    ;; golang
    go-mode
-   go-eldoc
    go-company
 
    ;; php
@@ -216,7 +243,6 @@
    php-extras
    phpcbf
    php-boris
-   ac-php
 
    ;; docker
    docker
@@ -231,12 +257,9 @@
 
    ;; typescript and javascript
    js2-mode
-   ac-js2
    json-mode
    json-reformat
    typescript-mode
-   tss
-   tide
 
    ;; css tools
    css-eldoc
@@ -246,14 +269,16 @@
    protobuf-mode
 
    ;; misc mode
+   jsonnet-mode
+   rust-mode
    nginx-mode
    yaml-mode
+   toml-mode
    markdown-mode
    markdown-mode+
+   markdown-preview-mode
 
    ;; misc tools
-   rust-mode
-   jsonnet-mode
    xml-rpc-el
    weblogger-el
    restclient))
