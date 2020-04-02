@@ -21,6 +21,7 @@
  '(display-time-24hr-format t)
  '(display-time-day-and-date t)
  '(ediff-window-setup-function ediff-window-setup-plain)
+ '(emmet-indentation 2)
  '(flycheck-go-gofmt-executable "goimports")
  '(flycheck-go-vet-executable "go vet")
  '(flycheck-go-vet-shadow t)
@@ -32,17 +33,28 @@
  '(gofmt-command "goimports")
  '(indent-tabs-mode nil)
  '(inhibit-startup-screen t)
+ '(js-chain-indent t)
+ '(js-indent-align-list-continuation nil)
  '(js-indent-level 4)
  '(js-switch-indent-offset 4)
  '(lsp-clients-go-server "gopls")
  '(lsp-eldoc-render-all nil)
+ '(lsp-html-format-wrap-line-length 80)
  '(lsp-prefer-flymake nil)
+ '(lsp-typescript-implementations-code-lens-enabled t)
+ '(lsp-typescript-preferences-quote-style "single")
+ '(lsp-typescript-references-code-lens-enabled t)
+ '(lsp-typescript-suggest-complete-function-calls t)
  '(lsp-ui-doc-header t)
  '(lsp-ui-doc-include-signature t)
  '(lsp-ui-doc-position (quote top))
  '(lsp-ui-doc-use-childframe t)
  '(lsp-ui-doc-use-webkit nil)
  '(lsp-ui-flycheck-enable t)
+ '(lsp-vetur-format-default-formatter-html "prettier")
+ '(lsp-vetur-format-options-tab-size 2)
+ '(lsp-vetur-format-script-initial-indent nil)
+ '(lsp-vetur-use-workspace-dependencies t)
  '(make-backup-files nil)
  '(package-archives
    (quote
@@ -54,6 +66,9 @@
  '(python-check-command "/usr/bin/pyflakes3")
  '(python-shell-interpreter "/usr/bin/python3")
  '(pyvenv-virtualenvwrapper-python "/usr/bin/python3")
+ '(rustic-format-trigger (quote on-save))
+ '(rustic-indent-method-chain t)
+ '(rustic-indent-where-clause t)
  '(safe-local-variable-values
    (quote
     ((python-shell-interpreter . "python")
@@ -70,7 +85,10 @@
  '(size-indication-mode t)
  '(smerge-refine-ignore-whitespace t t)
  '(typescript-enabled-frameworks (quote (typescript)))
- '(typescript-indent-level 4)
+ '(typescript-indent-level 2)
+ '(vue-html-extra-indent 0)
+ '(vue-html-tab-width 2)
+ '(web-mode-code-indent-offset 2)
  '(weblogger-config-alist
    (quote
     (("81k" "https://81k.today/xmlrpc.php" "ronmi" "" "1")
@@ -88,7 +106,8 @@
 (set-fontset-font "fontset-startup" 'han (font-spec :family "WenQuanYi Micro Hei Mono" :size 22))
 (add-to-list 'default-frame-alist '(font . "fontset-startup"))
 
-(setenv "GOPATH" (concat (getenv "HOME") "/go"))
+(setq exec-path (append exec-path (split-string (getenv "PATH") ":")))
+;; (setenv "GOPATH" (concat (getenv "HOME") "/go"))
 ;; (setenv "PATH" (concat (getenv "GOROOT") "/bin:"
 ;; 		       (getenv "GOPATH") "/bin:"
 ;; 		       (getenv "HOME") "/bin:"
@@ -112,11 +131,6 @@
  '(
    (:name flycheck
    	  :after (global-flycheck-mode))
-   (:name exec-path-from-shell
-	  :after (progn
-		   (setq exec-path-from-shell-variables
-			 (quote ("PATH" "GOPATH" "GOROOT")))
-		   (exec-path-from-shell-initialize)))
    (:name yasnippet
           :after (yas-global-mode t))
 
@@ -150,6 +164,8 @@
                    (add-hook 'html-mode-hook #'lsp-deferred)
                    (add-hook 'lsp-mode-hook
                              (lambda ()
+                               (define-key lsp-mode-map (kbd "C-c w r") #'lsp-workspace-restart)
+                               (define-key lsp-mode-map (kbd "C-c p d") #'lsp-describe-thing-at-point)
                                (define-key lsp-mode-map (kbd "C-c s d") #'lsp-find-definition)
                                (define-key lsp-mode-map (kbd "C-c s r") #'lsp-find-references)
                                (define-key lsp-mode-map (kbd "C-c g t") #'lsp-goto-type-definition)
@@ -220,13 +236,14 @@
           :type github :pkgname "AdamNiederer/vue-mode"
           :after (progn
                    (add-hook 'vue-mode-hook #'lsp)
+                   (add-hook 'vue-mode-hook #'lsp-vue-mmm-enable)
 		   (add-hook 'vue-mode-hook
 			     (lambda ()
 			       (yas-minor-mode t)
 			       (company-mode t)
 			       (flycheck-mode)
                                (lsp-ui-mode t)))))
-          
+   
 
    ;; html
    (:name emmet-mode
@@ -234,6 +251,10 @@
                    (add-hook 'html-mode-hook #'emmet-mode)
                    (add-hook 'web-mode-hook #'emmet-mode)))
 
+   ;; rust
+   (:name rustic
+          :type github :pkgname "brotzeit/rustic")
+   
    ;; misc modes
    (:name jsonnet-mode
 	  :type github :pkgname "mgyucht/jsonnet-mode")
@@ -253,7 +274,6 @@
    yasnippet
    flycheck
    xcscope
-   exec-path-from-shell
 
    ;; lsp and treemacs
    treemacs
@@ -304,9 +324,13 @@
    ;; protobuf
    protobuf-mode
 
+   ;; rust
+   projectile
+   xterm-color
+   rustic
+   
    ;; misc mode
    jsonnet-mode
-   rust-mode
    nginx-mode
    yaml-mode
    toml-mode
@@ -321,3 +345,11 @@
 
 (el-get-cleanup my:el-get-packages)
 (el-get 'sync my:el-get-packages)
+(put 'upcase-region 'disabled nil)
+(defun add-ssh-agent-to-tramp ()
+  (cl-pushnew '("-A")
+              (cadr (assoc 'tramp-login-args
+                                        ; if on Windows using Putty with Pageant,
+                                        ; replace "ssh" with "plink"
+                           (assoc "ssh" tramp-methods)))
+              :test #'equal))
