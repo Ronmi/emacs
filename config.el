@@ -308,7 +308,6 @@
    web-mode
    company-web
    emmet-mode
-   web-mode-extension
 
    ;; typescript and javascript
    js2-mode
@@ -319,7 +318,6 @@
 
    ;; css tools
    css-eldoc
-   css-palette
 
    ;; protobuf
    protobuf-mode
