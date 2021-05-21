@@ -3,7 +3,7 @@
 ;; installed packages.  Don't delete this line.  If you don't want it,
 ;; just comment it out by adding a semicolon to the start of the line.
 ;; You may delete these explanatory comments.
-(package-initialize)
+(require 'package)
 
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
@@ -28,6 +28,7 @@
  '(flycheck-json-python-json-executable "/usr/bin/python3")
  '(flycheck-phpcs-standard "PSR2")
  '(flycheck-python-pycompile-executable "/usr/bin/python3")
+ '(gnutls-algorithm-priority "NORMAL:-VERS-TLS1.3")
  '(go-eldoc-gocode-args (quote ("-cache")))
  '(godoc-reuse-buffer t)
  '(gofmt-command "goimports")
@@ -59,7 +60,9 @@
  '(package-archives
    (quote
     (("melpa" . "https://melpa.org/packages/")
+     ("melpa-stable" . "https://stable.melpa.org/packages/")
      ("gnu" . "http://elpa.gnu.org/packages/"))))
+ '(package-selected-packages (quote (rainbow-mode queue)))
  '(php-boris-command "boris.phar")
  '(php-mode-coding-style (quote psr2))
  '(phpcbf-standard "PSR2")
@@ -69,19 +72,6 @@
  '(rustic-format-trigger (quote on-save))
  '(rustic-indent-method-chain t)
  '(rustic-indent-where-clause t)
- '(safe-local-variable-values
-   (quote
-    ((python-shell-interpreter . "python")
-     (python-shell-virtualenv-root . "/home/ronmi/play/python/ordering/env")
-     (python-shell-virtualenv-root . "../env")
-     (pyvenv-activate . "../env")
-     (python-shell-interpreter-args . "manage.py shell")
-     (python-shell-interpreter . "../env/bin/python3")
-     (python-shell-interpreter . "python3")
-     (python-shell-interpreter . "./env/bin/python3")
-     (python-shell-interpreter . "env/bin/python3")
-     (python-shell-virtualenv-path . "env")
-     (pyvenv-activate . "env"))))
  '(size-indication-mode t)
  '(smerge-refine-ignore-whitespace t t)
  '(typescript-enabled-frameworks (quote (typescript)))
@@ -99,6 +89,8 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  )
+
+(package-initialize)
 
 ;; demo zh_TW: 示範文字示範文字:示範;文字 english()#[]-+_ 示範文字示範文字示範文字简体中文
 ;; 英文對照組: o01I223344556677:8899;0Oaa english()#[]-+_ bbccddeeffgghhiijjkk1lmmnnOoppqq
@@ -129,6 +121,8 @@
 (setq
  el-get-sources
  '(
+   (:name bui.el
+          :type github :pkgname "alezost/bui.el")
    (:name flycheck
    	  :after (global-flycheck-mode))
    (:name yasnippet
@@ -159,6 +153,11 @@
           :type github
           :pkgname "emacs-lsp/dap-mode")
    (:name lsp-mode
+          :depends (posframe bui.el spinner)
+          :load-path ("/home/ronmi/.emacs.d/el-get/lsp-mode"
+                      "/home/ronmi/.emacs.d/el-get/lsp-mode/clients"
+                      "/home/ronmi/.emacs.d/el-get/lsp-mode/features"
+                      "/home/ronmi/.emacs.d/el-get/lsp-mode/scripts")
           :after (progn
                    (add-hook 'js-mode-hook #'lsp-deferred)
                    (add-hook 'html-mode-hook #'lsp-deferred)
@@ -236,7 +235,7 @@
           :type github :pkgname "AdamNiederer/vue-mode"
           :after (progn
                    (add-hook 'vue-mode-hook #'lsp)
-                   (add-hook 'vue-mode-hook #'lsp-vue-mmm-enable)
+                   ;;(add-hook 'vue-mode-hook #'lsp-vue-mmm-enable)
 		   (add-hook 'vue-mode-hook
 			     (lambda ()
 			       (yas-minor-mode t)
@@ -254,6 +253,26 @@
    ;; rust
    (:name rustic
           :type github :pkgname "brotzeit/rustic")
+
+   ;; solidity
+   (:name solidity-mode
+          :after (progn
+		   (add-hook 'solidity-mode-hook
+			     (lambda ()
+                               (require 'solidity-flycheck)
+                               (require 'company-solidity)
+                               (set (make-local-variable 'company-backends)
+		                    (append '((company-solidity company-capf company-dabbrev-code))
+			                    company-backends))
+                               (setq flycheck-solidity-solc-addstd-contracts t)
+                               (setq solidity-flycheck-solium-checker-active t)
+                               (setq solidity-flycheck-solc-checker-active t)
+                               (setq solidity-comment-style (quote slash))
+                               (setq solidity-solium-path "solium")
+		               (yas-minor-mode t)
+			       (company-mode t)
+			       (flycheck-mode)
+                               (lsp-ui-mode t)))))
    
    ;; misc modes
    (:name jsonnet-mode
@@ -280,7 +299,6 @@
    lsp-mode
    dap-mode
    lsp-ui
-   company-lsp
    lsp-treemacs
 
    ;; git
@@ -326,8 +344,12 @@
    projectile
    xterm-color
    rustic
+
+   ;; ethereum
+   solidity-mode
    
    ;; misc mode
+   rainbow-mode
    jsonnet-mode
    nginx-mode
    yaml-mode
@@ -351,3 +373,6 @@
                                         ; replace "ssh" with "plink"
                            (assoc "ssh" tramp-methods)))
               :test #'equal))
+
+
+(eval-after-load 'tramp '(add-ssh-agent-to-tramp))

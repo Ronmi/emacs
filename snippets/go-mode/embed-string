@@ -1,0 +1,6 @@
+# -*- mode: snippet -*-
+# name: embed-string
+# key: es
+# --
+//go:embed ${1:file}
+var ${2:var} string$0

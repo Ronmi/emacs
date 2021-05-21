@@ -1,0 +1,5 @@
+# key: eb
+# name: embed-byte
+# --
+//go:embed ${1:file}
+var ${2:var} []byte$0
