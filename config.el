@@ -1,4 +1,3 @@
-
 ;; Added by Package.el.  This must come before configurations of
 ;; installed packages.  Don't delete this line.  If you don't want it,
 ;; just comment it out by adding a semicolon to the start of the line.
@@ -17,7 +16,7 @@
  '(autopep8-path "/home/ronmi/.py/bin/autopep8")
  '(calendar-chinese-all-holidays-flag t)
  '(column-number-mode t)
- '(custom-enabled-themes (quote (tsdh-dark)))
+ '(custom-enabled-themes '(tsdh-dark))
  '(display-time-24hr-format t)
  '(display-time-day-and-date t)
  '(ediff-window-setup-function ediff-window-setup-plain)
@@ -29,7 +28,7 @@
  '(flycheck-phpcs-standard "PSR2")
  '(flycheck-python-pycompile-executable "/usr/bin/python3")
  '(gnutls-algorithm-priority "NORMAL:-VERS-TLS1.3")
- '(go-eldoc-gocode-args (quote ("-cache")))
+ '(go-eldoc-gocode-args '("-cache"))
  '(godoc-reuse-buffer t)
  '(gofmt-command "goimports")
  '(indent-tabs-mode nil)
@@ -48,7 +47,7 @@
  '(lsp-typescript-suggest-complete-function-calls t)
  '(lsp-ui-doc-header t)
  '(lsp-ui-doc-include-signature t)
- '(lsp-ui-doc-position (quote top))
+ '(lsp-ui-doc-position 'top)
  '(lsp-ui-doc-use-childframe t)
  '(lsp-ui-doc-use-webkit nil)
  '(lsp-ui-flycheck-enable t)
@@ -58,31 +57,22 @@
  '(lsp-vetur-use-workspace-dependencies t)
  '(make-backup-files nil)
  '(package-archives
-   (quote
-    (("melpa" . "https://melpa.org/packages/")
+   '(("melpa" . "https://melpa.org/packages/")
      ("melpa-stable" . "https://stable.melpa.org/packages/")
-     ("gnu" . "http://elpa.gnu.org/packages/"))))
- '(package-selected-packages (quote (rainbow-mode queue)))
- '(php-boris-command "boris.phar")
- '(php-mode-coding-style (quote psr2))
- '(phpcbf-standard "PSR2")
+     ("gnu" . "http://elpa.gnu.org/packages/")))
+ '(package-selected-packages
+   '(dart-mode xref ssass-mode vue-html-mode tree-mode company rainbow-mode queue))
+ '(php-mode-coding-style 'psr2)
  '(python-check-command "/usr/bin/pyflakes3")
  '(python-shell-interpreter "/usr/bin/python3")
  '(pyvenv-virtualenvwrapper-python "/usr/bin/python3")
- '(rustic-format-trigger (quote on-save))
- '(rustic-indent-method-chain t)
- '(rustic-indent-where-clause t)
+ '(rustic-format-trigger 'on-save)
  '(size-indication-mode t)
  '(smerge-refine-ignore-whitespace t t)
- '(typescript-enabled-frameworks (quote (typescript)))
+ '(typescript-enabled-frameworks '(typescript))
  '(typescript-indent-level 2)
  '(vue-html-extra-indent 0)
- '(vue-html-tab-width 2)
- '(web-mode-code-indent-offset 2)
- '(weblogger-config-alist
-   (quote
-    (("81k" "https://81k.today/xmlrpc.php" "ronmi" "" "1")
-     ("food" "https://food.ronmi.tw/xmlrpc.php" "ronmi" "" "1")))))
+ '(vue-html-tab-width 2))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
@@ -92,22 +82,6 @@
 
 (package-initialize)
 
-;; demo zh_TW: 示範文字示範文字:示範;文字 english()#[]-+_ 示範文字示範文字示範文字简体中文
-;; 英文對照組: o01I223344556677:8899;0Oaa english()#[]-+_ bbccddeeffgghhiijjkk1lmmnnOoppqq
-(set-fontset-font "fontset-startup" 'latin (font-spec :family "DejaVu Sans Mono" :size 18))
-(set-fontset-font "fontset-startup" 'han (font-spec :family "WenQuanYi Micro Hei Mono" :size 22))
-(add-to-list 'default-frame-alist '(font . "fontset-startup"))
-
-(setq exec-path (append exec-path (split-string (getenv "PATH") ":")))
-;; (setenv "GOPATH" (concat (getenv "HOME") "/go"))
-;; (setenv "PATH" (concat (getenv "GOROOT") "/bin:"
-;; 		       (getenv "GOPATH") "/bin:"
-;; 		       (getenv "HOME") "/bin:"
-;; 		       (getenv "PATH")))
-;; (setq exec-path (append (list (concat (getenv "GOROOT") "/bin")
-;; 			  (concat (getenv "GOPATH") "/bin")
-;; 			  (concat (getenv "HOME") "/bin")) exec-path))
-
 (add-to-list 'load-path "~/.emacs.d/el-get/el-get")
 
 (unless (require 'el-get nil 'noerror)
@@ -115,26 +89,29 @@
       (url-retrieve-synchronously
        "https://raw.githubusercontent.com/dimitri/el-get/master/el-get-install.el")
     (goto-char (point-max))
-    (eval-print-last-sexp)))
+    (eval-print-last-sexp)
+    (require 'el-get-elpa)
+    (el-get-elpa-build-local-recipes)))
 
 (add-to-list 'el-get-recipe-path "~/.emacs.d/el-get-user/recipes")
+
+;; demo zh_TW: 示範文字示範文字:示範;文字 english()#[]-+_ 示範文字示範文字示範文字简体中文
+;; 英文對照組: o01I223344556677:8899;0Oaa english()#[]-+_ bbccddeeffgghhiijjkk1lmmnnOoppqq
+(set-fontset-font "fontset-startup" 'latin (font-spec :family "DejaVu Sans Mono" :size 18))
+(set-fontset-font "fontset-startup" 'han (font-spec :family "WenQuanYi Micro Hei Mono" :size 22))
+(add-to-list 'default-frame-alist '(font . "fontset-startup"))
+
+(setq exec-path (append exec-path (split-string (getenv "PATH") ":")))
+
 (setq
  el-get-sources
  '(
-   (:name bui.el
-          :type github :pkgname "alezost/bui.el")
    (:name flycheck
    	  :after (global-flycheck-mode))
    (:name yasnippet
           :after (yas-global-mode t))
 
-   ;; treemacs
-   (:name pfuture
-          :type github :pkgname "Alexander-Miller/pfuture")
    (:name treemacs
-          :type github :pkgname "Alexander-Miller/treemacs"
-          :depends (f s dash cl-lib ace-window pfuture ht hydra)
-          :load-path ("./src/elisp" "./src/extra")
           :after (progn
                    (add-hook 'treemacs-mode-hook
                              (lambda ()
@@ -147,17 +124,7 @@
                    (global-set-key (kbd "C-x t t") 'treemacs)))
 
    ;; lsp
-   (:name dap-mode
-          :website "https://github.com/emacs-lsp/dap-mode"
-          :description "Emacs client/library for the Debugger Adaptor Protocol"
-          :type github
-          :pkgname "emacs-lsp/dap-mode")
    (:name lsp-mode
-          :depends (posframe bui.el spinner)
-          :load-path ("/home/ronmi/.emacs.d/el-get/lsp-mode"
-                      "/home/ronmi/.emacs.d/el-get/lsp-mode/clients"
-                      "/home/ronmi/.emacs.d/el-get/lsp-mode/features"
-                      "/home/ronmi/.emacs.d/el-get/lsp-mode/scripts")
           :after (progn
                    (add-hook 'js-mode-hook #'lsp-deferred)
                    (add-hook 'html-mode-hook #'lsp-deferred)
@@ -171,8 +138,6 @@
                                (define-key lsp-mode-map (kbd "C-c g i") #'lsp-goto-implementation)
                                (define-key lsp-mode-map (kbd "C-c f i") #'lsp-organize-imports)
                                (define-key lsp-mode-map (kbd "C-c f f") #'lsp-format-buffer)))))
-   (:name lsp-treemacs
-          :type github :pkgname "emacs-lsp/lsp-treemacs")
    
    ;; git
    (:name magit
@@ -207,13 +172,6 @@
 			       (company-mode t)
 			       (flycheck-mode)
 			       (yas-minor-mode t)))))
-   (:name php-extras :depends (php-mode)
-	  :type github :pkgname "arnested/php-extras"
-	  :after (add-hook 'php-mode-hook #'eldoc-mode))
-   (:name phpcbf :depends (php-mode)
-	  :type github :pkgname "nishimaki10/emacs-phpcbf")
-   (:name php-boris :depends (php-mode)
-	  :type github :pkgname "tomterl/php-boris")
 
    ;; js
    (:name typescript-mode
@@ -225,17 +183,9 @@
 			       (company-mode t)
 			       (flycheck-mode)
                                (lsp-ui-mode t)))))
-   (:name edit-indirect
-          :type github :pkgname "Fanael/edit-indirect")
-   (:name ssass-mode
-          :type github :pkgname "AdamNiederer/ssass-mode")
-   (:name vue-html-mode
-          :type github :pkgname "AdamNiederer/vue-html-mode")
    (:name vue-mode :depends (mmm-mode edit-indirect vue-html-mode ssass-mode)
-          :type github :pkgname "AdamNiederer/vue-mode"
           :after (progn
                    (add-hook 'vue-mode-hook #'lsp)
-                   ;;(add-hook 'vue-mode-hook #'lsp-vue-mmm-enable)
 		   (add-hook 'vue-mode-hook
 			     (lambda ()
 			       (yas-minor-mode t)
@@ -250,9 +200,15 @@
                    (add-hook 'html-mode-hook #'emmet-mode)
                    (add-hook 'web-mode-hook #'emmet-mode)))
 
-   ;; rust
-   (:name rustic
-          :type github :pkgname "brotzeit/rustic")
+   ;; dart
+   (:name dart-mode
+          :after (progn
+                   (add-hook 'dart-mode-hook 'lsp)
+                   (setq gc-cons-threshold (* 100 1024 1024)
+                         read-process-output-max (* 1024 1024)
+                         company-minimum-prefix-length 1
+                         lsp-lens-enable t
+                         lsp-signature-auto-activate nil)))
 
    ;; solidity
    (:name solidity-mode
@@ -274,11 +230,6 @@
 			       (flycheck-mode)
                                (lsp-ui-mode t)))))
    
-   ;; misc modes
-   (:name jsonnet-mode
-	  :type github :pkgname "mgyucht/jsonnet-mode")
-   (:name nginx-mode
-	  :type github :pkgname "ajc/nginx-mode")
    (:name markdown-mode+  :depends (markdown-mode)
 	  :type github :pkgname "milkypostman/markdown-mode-plus")))
 
@@ -290,8 +241,8 @@
  '(el-get
    ;; common tools
    company-mode
+   company-tabnine
    yasnippet
-   flycheck
    xcscope
 
    ;; lsp and treemacs
@@ -309,13 +260,9 @@
 
    ;; golang
    go-mode
-   go-company
 
    ;; php
    php-mode
-   php-extras
-   phpcbf
-   php-boris
 
    ;; docker
    docker
@@ -345,6 +292,11 @@
    xterm-color
    rustic
 
+   ;; dart
+   dart-mode
+   lsp-dart
+   hover
+
    ;; ethereum
    solidity-mode
    
@@ -366,13 +318,12 @@
 (el-get-cleanup my:el-get-packages)
 (el-get 'sync my:el-get-packages)
 (put 'upcase-region 'disabled nil)
-(defun add-ssh-agent-to-tramp ()
+
+(with-eval-after-load 'tramp
   (cl-pushnew '("-A")
               (cadr (assoc 'tramp-login-args
-                                        ; if on Windows using Putty with Pageant,
-                                        ; replace "ssh" with "plink"
                            (assoc "ssh" tramp-methods)))
               :test #'equal))
 
-
-(eval-after-load 'tramp '(add-ssh-agent-to-tramp))
+(with-eval-after-load 'company
+  (add-to-list 'company-backends 'company-tabnine))
