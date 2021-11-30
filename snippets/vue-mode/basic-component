@@ -1,0 +1,16 @@
+# -*- mode: snippet -*-
+# name: basic typescript class component
+# key: tmpl-ts-cls
+# --
+`(funcall (lambda () (make-variable-buffer-local 'yas-indent-line) (setq yas-indent-line "fixed") ""))`<template>
+</template>
+
+<script lang="ts">
+import { Component, Vue } from "vue-property-decorator";
+$0
+
+@Component({})
+export default class $1 extends Vue {
+}
+</script>
+`(funcall (lambda () (setq yas-indent-line "auto") ""))`

@@ -1,0 +1,5 @@
+# -*- mode: snippet -*-
+# name: case-null
+# key: casenull
+# --
+CASE WHEN ${1:var} IS NULL THEN ${2:constant} ELSE $1 END AS ${3:var}$0
