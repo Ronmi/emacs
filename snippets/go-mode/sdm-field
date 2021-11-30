@@ -1,5 +1,0 @@
-# -*- mode: snippet -*-
-# name: sdm field
-# key: sf
-# --
-${1:field} ${2:type} \`sdm:"${3:key}"\`$0
