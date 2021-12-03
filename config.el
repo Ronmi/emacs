@@ -210,6 +210,7 @@
    (:name dart-mode
           :after (progn
                    (add-hook 'dart-mode-hook 'lsp)
+                   (add-hook 'lsp-mode-hook (lambda nil (define-key lsp-mode-map (kbd "C-c f r") #'lsp-dart-dap-flutter-hot-reload)))
                    (setq gc-cons-threshold (* 100 1024 1024)
                          read-process-output-max (* 1024 1024)
                          company-minimum-prefix-length 1
