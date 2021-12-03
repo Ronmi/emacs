@@ -189,7 +189,7 @@
 			       (company-mode t)
 			       (flycheck-mode)
                                (lsp-ui-mode t)))))
-   (:name vue-mode :depends (mmm-mode edit-indirect vue-html-mode ssass-mode)
+   (:name vue-mode
           :after (progn
                    (add-hook 'vue-mode-hook #'lsp)
 		   (add-hook 'vue-mode-hook
