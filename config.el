@@ -287,6 +287,7 @@
    json-reformat
    typescript-mode
    vue-mode
+   tide
 
    ;; css tools
    css-eldoc
