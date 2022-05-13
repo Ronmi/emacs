@@ -35,14 +35,16 @@
  '(inhibit-startup-screen t)
  '(js-chain-indent t)
  '(js-indent-align-list-continuation nil)
- '(js-indent-level 4)
+ '(js-indent-level 2)
  '(js-switch-indent-offset 4)
  '(lsp-clients-go-server "gopls")
  '(lsp-eldoc-render-all nil)
+ '(lsp-eslint-auto-fix-on-save t)
  '(lsp-html-format-wrap-line-length 80)
  '(lsp-prefer-flymake nil)
  '(lsp-rust-analyzer-display-chaining-hints t)
  '(lsp-rust-analyzer-display-parameter-hints t)
+ '(lsp-rust-analyzer-proc-macro-enable t)
  '(lsp-rust-analyzer-server-display-inlay-hints t)
  '(lsp-rust-server 'rust-analyzer)
  '(lsp-typescript-implementations-code-lens-enabled t)
@@ -65,7 +67,7 @@
      ("melpa-stable" . "https://stable.melpa.org/packages/")
      ("gnu" . "http://elpa.gnu.org/packages/")))
  '(package-selected-packages
-   '(dart-mode xref ssass-mode vue-html-mode tree-mode company rainbow-mode queue))
+   '(org dart-mode xref ssass-mode vue-html-mode tree-mode company rainbow-mode queue))
  '(php-mode-coding-style 'psr2)
  '(python-check-command "/usr/bin/pyflakes3")
  '(python-shell-interpreter "/usr/bin/python3")
@@ -84,7 +86,7 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- )
+ '(default ((t (:family "WenQuanYi Zen Hei Mono" :weight normal :width normal :height 160)))))
 
 (package-initialize)
 
@@ -103,9 +105,13 @@
 
 ;; demo zh_TW: 示範文字示範文字:示範;文字 english()#[]-+_ 示範文字示範文字示範文字简体中文
 ;; 英文對照組: o01I223344556677:8899;0Oaa english()#[]-+_ bbccddeeffgghhiijjkk1lmmnnOoppqq
-(set-fontset-font "fontset-startup" 'latin (font-spec :family "DejaVu Sans Mono" :size 18))
-(set-fontset-font "fontset-startup" 'han (font-spec :family "WenQuanYi Micro Hei Mono" :size 22))
-(add-to-list 'default-frame-alist '(font . "fontset-startup"))
+;;(set-fontset-font "fontset-startup" 'latin (font-spec :family "DejaVu Sans Mono" :size 18))
+;;(set-fontset-font "fontset-startup" 'han (font-spec :family "WenQuanYi Micro Hei Mono" :size 22))
+;;(add-to-list 'default-frame-alist '(font . "fontset-startup"))
+;;(add-to-list 'default-frame-alist '(font . "WenQuanYi Zen Hei Mono"))
+;; (set-fontset-font "fontset-startup" 'latin (font-spec :family "WenQuanYi Zen Hei Mono" :size 20))
+;; (set-fontset-font "fontset-startup" 'han (font-spec :family "WenQuanYi Zen Hei Mono" :size 20))
+;; (add-to-list 'default-frame-alist '(font . "fontset-startup"))
 
 (setq exec-path (append exec-path (split-string (getenv "PATH") ":")))
 
@@ -147,6 +153,7 @@
    
    ;; git
    (:name magit
+          :info nil
 	  :after (global-set-key (kbd "C-c C-a") 'magit-status))
    (:name magit-filenotify
 	  :after (add-hook 'magit-status-mode-hook #'magit-filenotify-mode))
@@ -183,6 +190,8 @@
    (:name typescript-mode
           :after (progn
                    (add-hook 'typescript-mode-hook #'lsp)
+                   (add-hook 'typescript-mode-hook #'prettier-js-mode)
+                   (add-hook 'typescript-mode-hook #'add-node-modules-path)
 		   (add-hook 'typescript-mode-hook
 			     (lambda ()
 			       (yas-minor-mode t)
@@ -192,6 +201,8 @@
    (:name vue-mode
           :after (progn
                    (add-hook 'vue-mode-hook #'lsp)
+                   (add-hook 'vue-mode-hook #'prettier-js-mode)
+                   (add-hook 'vue-mode-hook #'add-node-modules-path)
 		   (add-hook 'vue-mode-hook
 			     (lambda ()
 			       (yas-minor-mode t)
@@ -238,7 +249,12 @@
                                (lsp-ui-mode t)))))
    
    (:name markdown-mode+  :depends (markdown-mode)
-	  :type github :pkgname "milkypostman/markdown-mode-plus")))
+	  :type github :pkgname "milkypostman/markdown-mode-plus")
+
+   (:name eaf
+	  :type github :pkgname "emacs-eaf/emacs-application-framework"
+          :autoloads nil)))
+
 
 ;; fix elpa bug
 (setq package-check-signature nil)
@@ -248,7 +264,7 @@
  '(el-get
    ;; common tools
    company-mode
-   company-tabnine
+   ;; company-tabnine
    yasnippet
    xcscope
 
@@ -288,6 +304,8 @@
    typescript-mode
    vue-mode
    tide
+   prettier-js
+   add-node-modules-path
 
    ;; css tools
    css-eldoc
@@ -317,8 +335,10 @@
    markdown-mode
    markdown-mode+
    markdown-preview-mode
+   easy-hugo
 
    ;; misc tools
+   eaf
    xml-rpc-el
    weblogger-el
    restclient))
@@ -333,5 +353,12 @@
                            (assoc "ssh" tramp-methods)))
               :test #'equal))
 
-(with-eval-after-load 'company
-  (add-to-list 'company-backends 'company-tabnine))
+;; (with-eval-after-load 'company
+;;   (add-to-list 'company-backends 'company-tabnine))
+(defun open-eaf-browser ()
+  "fuc"
+  (interactive)
+  (require 'eaf)
+  (require 'eaf-browser)
+  (call-interactively 'eaf-open-browser))
+(global-set-key (kbd "C-c C-x b") 'open-eaf-browser)
