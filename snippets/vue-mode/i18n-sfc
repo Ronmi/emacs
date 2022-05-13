@@ -1,0 +1,10 @@
+# -*- mode: snippet -*-
+# name: i18n
+# key: i18n
+# --
+`(funcall (lambda () (make-variable-buffer-local 'yas-indent-line) (setq yas-indent-line "fixed") ""))`<i18n locale="$1">
+{
+    $0
+}
+</i18n>
+`(funcall (lambda () (setq yas-indent-line "auto") ""))`

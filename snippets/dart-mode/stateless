@@ -1,0 +1,14 @@
+# -*- mode: snippet -*-
+# name: stateless
+# key: stateless
+# --
+import 'package:flutter/material.dart';
+
+class ${1:name} extends StatelessWidget {
+  $1({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    $0
+  }
+}

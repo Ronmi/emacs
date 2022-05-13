@@ -1,0 +1,20 @@
+# -*- mode: snippet -*-
+# name: stateful
+# key: stateful
+# --
+import 'package:flutter/material.dart';
+
+class $1 extends StatefulWidget {
+  $1({Key? key}) : super(key: key);
+
+  @override
+  _$1State createState() => _$1State();
+}
+
+class _$1State extends State<$1> {
+
+  @override
+  Widget build(BuildContext context) {
+    $0
+  }
+}
