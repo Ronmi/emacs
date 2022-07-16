@@ -67,7 +67,7 @@
      ("melpa-stable" . "https://stable.melpa.org/packages/")
      ("gnu" . "http://elpa.gnu.org/packages/")))
  '(package-selected-packages
-   '(org dart-mode xref ssass-mode vue-html-mode tree-mode company rainbow-mode queue))
+   '(compat org dart-mode xref ssass-mode vue-html-mode tree-mode company rainbow-mode queue))
  '(php-mode-coding-style 'psr2)
  '(python-check-command "/usr/bin/pyflakes3")
  '(python-shell-interpreter "/usr/bin/python3")
@@ -271,6 +271,8 @@
    ;; lsp and treemacs
    treemacs
    lsp-mode
+   lsp-docker
+   lsp-origami
    dap-mode
    lsp-ui
    lsp-treemacs
@@ -362,3 +364,16 @@
   (require 'eaf-browser)
   (call-interactively 'eaf-open-browser))
 (global-set-key (kbd "C-c C-x b") 'open-eaf-browser)
+
+(require 's)
+(cl-defmethod lsp-clients-extract-signature-on-hover (contents (_server-id (eql rust-analyzer)))
+  (-let* (((&hash "value") contents)
+          (groups (--partition-by (s-blank? it) (s-lines value)))
+          (sig_group (if (s-equals? "```rust" (car (-third-item groups)))
+                         (-third-item groups)
+                       (car groups)))
+          (sig (--> sig_group
+                    (--drop-while (s-equals? "```rust" it) it)
+                    (--take-while (not (s-equals? "```" it)) it)
+                    (s-join "" it))))
+    (lsp--render-element (concat "```rust\n" sig "\n```"))))
