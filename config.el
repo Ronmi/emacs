@@ -17,6 +17,7 @@
  '(calendar-chinese-all-holidays-flag t)
  '(column-number-mode t)
  '(custom-enabled-themes '(tsdh-dark))
+ '(default-input-method "rime")
  '(display-time-24hr-format t)
  '(display-time-day-and-date t)
  '(ediff-window-setup-function ediff-window-setup-plain)
@@ -346,6 +347,7 @@
    markdown-mode+
    markdown-preview-mode
    easy-hugo
+   rime
 
    ;; misc tools
    eaf
