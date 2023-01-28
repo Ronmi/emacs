@@ -1,8 +1,4 @@
-;; Added by Package.el.  This must come before configurations of
-;; installed packages.  Don't delete this line.  If you don't want it,
-;; just comment it out by adding a semicolon to the start of the line.
-;; You may delete these explanatory comments.
-(require 'package)
+;;(require 'package)
 
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
@@ -28,6 +24,7 @@
  '(flycheck-json-python-json-executable "/usr/bin/python3")
  '(flycheck-phpcs-standard "PSR2")
  '(flycheck-python-pycompile-executable "/usr/bin/python3")
+ '(global-company-mode t)
  '(gnutls-algorithm-priority "NORMAL:-VERS-TLS1.3")
  '(go-eldoc-gocode-args '("-cache"))
  '(godoc-reuse-buffer t)
@@ -39,6 +36,7 @@
  '(js-indent-level 2)
  '(js-switch-indent-offset 4)
  '(lsp-clients-go-server "gopls")
+ '(lsp-dired-mode t)
  '(lsp-eldoc-enable-hover t)
  '(lsp-eldoc-render-all nil)
  '(lsp-eslint-auto-fix-on-save t)
@@ -50,6 +48,7 @@
  '(lsp-rust-analyzer-server-display-inlay-hints t)
  '(lsp-rust-server 'rust-analyzer)
  '(lsp-signature-auto-activate '(:on-trigger-char :after-completion :on-server-request))
+ '(lsp-treemacs-sync-mode t)
  '(lsp-typescript-implementations-code-lens-enabled t)
  '(lsp-typescript-preferences-quote-style "single")
  '(lsp-typescript-references-code-lens-enabled t)
@@ -57,9 +56,9 @@
  '(lsp-ui-doc-header t)
  '(lsp-ui-doc-include-signature t)
  '(lsp-ui-doc-max-width 80)
- '(lsp-ui-doc-position 'top)
+ '(lsp-ui-doc-position 'top t)
  '(lsp-ui-doc-show-with-cursor t)
- '(lsp-ui-doc-show-with-mouse nil)
+ '(lsp-ui-doc-show-with-mouse nil t)
  '(lsp-ui-doc-use-childframe t)
  '(lsp-ui-doc-use-webkit t)
  '(lsp-ui-flycheck-enable t)
@@ -71,12 +70,7 @@
  '(lsp-vetur-format-script-initial-indent nil)
  '(lsp-vetur-use-workspace-dependencies t)
  '(make-backup-files nil)
- '(package-archives
-   '(("melpa" . "https://melpa.org/packages/")
-     ("melpa-stable" . "https://stable.melpa.org/packages/")
-     ("gnu" . "http://elpa.gnu.org/packages/")))
- '(package-selected-packages
-   '(compat org dart-mode xref ssass-mode vue-html-mode tree-mode company rainbow-mode queue))
+ '(marginalia-mode t)
  '(php-mode-coding-style 'psr2)
  '(python-check-command "/usr/bin/pyflakes3")
  '(python-shell-interpreter "/usr/bin/python3")
@@ -85,295 +79,178 @@
  '(rustic-kill-buffer-and-window t)
  '(rustic-lsp-server 'rust-analyzer)
  '(size-indication-mode t)
- '(smerge-refine-ignore-whitespace t t)
+ '(smerge-refine-ignore-whitespace t)
  '(typescript-enabled-frameworks '(typescript))
  '(typescript-indent-level 2)
+ '(vertico-mode t)
  '(vue-html-extra-indent 0)
- '(vue-html-tab-width 2))
+ '(vue-html-tab-width 2)
+ '(warning-suppress-types '((comp))))
+
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(default ((t (:family "WenQuanYi Zen Hei Mono" :weight normal :width normal :height 160)))))
-
-(package-initialize)
-
-(add-to-list 'load-path "~/.emacs.d/el-get/el-get")
-
-(unless (require 'el-get nil 'noerror)
-  (with-current-buffer
-      (url-retrieve-synchronously
-       "https://raw.githubusercontent.com/dimitri/el-get/master/el-get-install.el")
-    (goto-char (point-max))
-    (eval-print-last-sexp)
-    (require 'el-get-elpa)
-    (el-get-elpa-build-local-recipes)))
-
-(add-to-list 'el-get-recipe-path "~/.emacs.d/el-get-user/recipes")
-
+ '(default ((t (:inherit nil :extend nil :stipple nil :inverse-video nil :box nil :strike-through nil :overline nil :underline nil :slant normal :weight regular :height 165 :width normal :foundry "文泉驛等寬正黑Nerd")))))
 ;; demo zh_TW: 示範文字示範文字:示範;文字 english()#[]-+_ 示範文字示範文字示範文字简体中文
 ;; 英文對照組: o01I223344556677:8899;0Oaa english()#[]-+_ bbccddeeffgghhiijjkk1lmmnnOoppqq
-;;(set-fontset-font "fontset-startup" 'latin (font-spec :family "DejaVu Sans Mono" :size 18))
-;;(set-fontset-font "fontset-startup" 'han (font-spec :family "WenQuanYi Micro Hei Mono" :size 22))
-;;(add-to-list 'default-frame-alist '(font . "fontset-startup"))
-;;(add-to-list 'default-frame-alist '(font . "WenQuanYi Zen Hei Mono"))
-;; (set-fontset-font "fontset-startup" 'latin (font-spec :family "WenQuanYi Zen Hei Mono" :size 20))
-;; (set-fontset-font "fontset-startup" 'han (font-spec :family "WenQuanYi Zen Hei Mono" :size 20))
-;; (add-to-list 'default-frame-alist '(font . "fontset-startup"))
+
+(defvar bootstrap-version)
+(let ((bootstrap-file
+       (expand-file-name "straight/repos/straight.el/bootstrap.el" user-emacs-directory))
+      (bootstrap-version 6))
+  (unless (file-exists-p bootstrap-file)
+    (with-current-buffer
+        (url-retrieve-synchronously
+         "https://raw.githubusercontent.com/radian-software/straight.el/develop/install.el"
+         'silent 'inhibit-cookies)
+      (goto-char (point-max))
+      (eval-print-last-sexp)))
+  (load bootstrap-file nil 'nomessage))
 
 (setq exec-path (append exec-path (split-string (getenv "PATH") ":")))
 
-(setq
- el-get-sources
- '(
-   (:name flycheck
-   	  :after (global-flycheck-mode))
-   (:name yasnippet
-          :after (yas-global-mode t))
 
-   (:name treemacs
-          :after (progn
-                   (add-hook 'treemacs-mode-hook
-                             (lambda ()
-                               (treemacs-follow-mode t)
-                               (treemacs-filewatch-mode t)))
-                   (global-set-key (kbd "C-x t 1") 'treemacs-delete-other-windows)
-                   (global-set-key (kbd "C-x t B") 'treemacs-bookmark)
-                   (global-set-key (kbd "C-x t C-f") 'treemacs-find-file)
-                   (global-set-key (kbd "C-x t M-t") 'treemacs-find-tag)
-                   (global-set-key (kbd "C-x t t") 'treemacs)))
+(setq package-enable-at-startup nil
+      straight-use-package-by-default t)
+(straight-use-package 'use-package)
 
-   ;; lsp
-   (:name lsp-mode
-          :after (progn
-                   (add-hook 'js-mode-hook #'lsp-deferred)
-                   (add-hook 'html-mode-hook #'lsp-deferred)
-                   (add-hook 'lsp-mode-hook
-                             (lambda ()
-                               (define-key lsp-mode-map (kbd "C-c w r") #'lsp-workspace-restart)
-                               (define-key lsp-mode-map (kbd "C-c p d") #'lsp-describe-thing-at-point)
-                               (define-key lsp-mode-map (kbd "C-c s d") #'lsp-find-definition)
-                               (define-key lsp-mode-map (kbd "C-c s r") #'lsp-find-references)
-                               (define-key lsp-mode-map (kbd "C-c g t") #'lsp-goto-type-definition)
-                               (define-key lsp-mode-map (kbd "C-c g i") #'lsp-goto-implementation)
-                               (define-key lsp-mode-map (kbd "C-c f i") #'lsp-organize-imports)
-                               (define-key lsp-mode-map (kbd "C-c f f") #'lsp-format-buffer)))))
-   
-   ;; git
-   (:name magit
-          :info nil
-	  :after (global-set-key (kbd "C-c C-a") 'magit-status))
-   (:name magit-filenotify
-	  :after (add-hook 'magit-status-mode-hook #'magit-filenotify-mode))
+(straight-use-package
+  '(systemd :type git :host github :repo "widefox/systemd-mode"))
+(use-package company
+  :bind (:map prog-mode-map
+         ("C-i" . company-indent-or-complete-common))
+  :config (global-company-mode t))
+(use-package vertico :config (vertico-mode t))
+(use-package consult-lsp)
+(use-package consult-company)
+(use-package marginalia :config (marginalia-mode t))
+(use-package yasnippet
+  :config (yas-global-mode t)
+  :hook ((go-mode
+         js-mode json-mode
+         typescript-mode vue-mode
+         php-mode web-mode
+         python-mode
+         markdown-mode toml-mode yaml-mode
+         rustic) . yas-minor-mode)
+  )
+(use-package xcscope)
+(use-package treemacs)
 
-   ;; golang
-   (:name go-mode
-	  :after (progn
-                   (add-hook 'go-mode-hook #'lsp-deferred)
-		   (add-hook 'go-mode-hook
-			     (lambda ()
-                               (lsp-ui-mode t)
-			       (company-mode t)
-			       (flycheck-mode)
-			       (yas-minor-mode t)))
-		   (custom-set-variables '(gofmt-command "goimports")
-					 '(flycheck-go-gofmt-executable "goimports"))
-		   (setq go-packages-function 'go-packages-go-list
-			 go-play-browse-function 'browse-url)
-		   (add-hook 'before-save-hook #'gofmt-before-save)))
+(use-package lsp-mode
+  :hook (go-mode
+         js-mode json-mode
+         typescript-mode vue-mode
+         php-mode web-mode
+         python-mode
+         markdown-mode toml-mode yaml-mode
+         rustic)
+  :bind (("C-c w r" . lsp-workspace-restart)
+         ("C-c s d" . lsp-find-definition)
+         ("C-c s r" . lsp-find-references)))
+(use-package lsp-ui
+  :init
+  (setq lsp-ui-doc-position 'at-point
+        lsp-ui-doc-show-with-mouse nil)
+  :bind (("C-c d" . lsp-ui-doc-show)
+         ("C-c I" . lsp-ui-imenu)))
+(use-package lsp-docker)
+(use-package lsp-origami)
+(use-package dap-mode)
+(use-package lsp-treemacs)
 
-   ;; php
-   (:name php-mode
-	  :after (progn
-		   (setq flycheck-phpcs-standard "PSR-2")
-                   (add-hook 'php-mode-hook #'lsp-deferred)
-		   (add-hook 'php-mode-hook
-			     (lambda ()
-                               (lsp-ui-mode t)
-			       (company-mode t)
-			       (flycheck-mode)
-			       (yas-minor-mode t)))))
+(use-package flycheck
+  :hook (go-mode
+         js-mode json-mode
+         typescript-mode vue-mode
+         php-mode web-mode
+         python-mode
+         markdown-mode toml-mode yaml-mode
+         rustic)
+  :defer)
+(use-package magit :bind (("C-c C-a" . magit-status)))
+(use-package magit-filenotify)
+(use-package magit-tramp)
+(use-package with-editor)
 
-   ;; js
-   (:name typescript-mode
-          :after (progn
-                   (add-hook 'typescript-mode-hook #'lsp)
-                   (add-hook 'typescript-mode-hook #'prettier-js-mode)
-                   (add-hook 'typescript-mode-hook #'add-node-modules-path)
-		   (add-hook 'typescript-mode-hook
-			     (lambda ()
-			       (yas-minor-mode t)
-			       (company-mode t)
-			       (flycheck-mode)
-                               (lsp-ui-mode t)))))
-   (:name vue-mode
-          :after (progn
-                   (add-hook 'vue-mode-hook #'lsp)
-                   (add-hook 'vue-mode-hook #'prettier-js-mode)
-                   (add-hook 'vue-mode-hook #'add-node-modules-path)
-		   (add-hook 'vue-mode-hook
-			     (lambda ()
-			       (yas-minor-mode t)
-			       (company-mode t)
-			       (flycheck-mode)
-                               (lsp-ui-mode t)))))
-   
+(use-package go-mode :config (progn
+		               (custom-set-variables '(gofmt-command "goimports")
+					             '(flycheck-go-gofmt-executable "goimports"))
+		               (setq go-packages-function 'go-packages-go-list
+			             go-play-browse-function 'browse-url)
+		               (add-hook 'before-save-hook #'gofmt-before-save)))
+(use-package php-mode)
+(use-package protobuf-mode)
+(use-package xterm-color)
+(use-package rustic)
+(use-package rainbow-mode)
+(use-package jsonnet-mode)
+(use-package nginx-mode)
+(use-package yaml-mode)
+(use-package toml-mode)
+(use-package markdown-mode+)
+(use-package markdown-preview-mode)
 
-   ;; html
-   (:name emmet-mode
-	  :after (progn
-                   (add-hook 'html-mode-hook #'emmet-mode)
-                   (add-hook 'web-mode-hook #'emmet-mode)))
+(use-package web-mode)
+(use-package company-web)
+(use-package emmet-mode
+  :hook html-mode)
+(use-package js2-mode)
+(use-package json-mode)
+(use-package json-reformat)
+(use-package typescript-mode
+  :config (add-hook 'typescript-mode-hook
+		    (lambda ()
+                      (add-node-modules-path)
+		      (yas-minor-mode t)
+		      (company-mode t)
+		      (flycheck-mode)
+                      (lsp-ui-mode t))))
 
-   ;; dart
-   (:name dart-mode
-          :after (progn
-                   (add-hook 'dart-mode-hook 'lsp)
-                   (add-hook 'lsp-mode-hook (lambda nil (define-key lsp-mode-map (kbd "C-c f r") #'lsp-dart-dap-flutter-hot-reload)))
-                   (setq gc-cons-threshold (* 100 1024 1024)
-                         read-process-output-max (* 1024 1024)
-                         company-minimum-prefix-length 1
-                         lsp-lens-enable t
-                         lsp-signature-auto-activate nil)))
+(use-package vue-mode
+  :config (add-hook 'vue-mode-hook
+		    (lambda ()
+                      (add-node-modules-path)
+		      (yas-minor-mode t)
+		      (company-mode t)
+		      (flycheck-mode)
+                      (lsp-ui-mode t))))
+(use-package tide)
+(use-package prettier-js :hook ((vue-mode typescript-mode) . prettier-js-mode))
+(use-package add-node-modules-path)
+(use-package css-eldoc)
 
-   ;; solidity
-   (:name solidity-mode
-          :after (progn
-		   (add-hook 'solidity-mode-hook
-			     (lambda ()
-                               (require 'solidity-flycheck)
-                               (require 'company-solidity)
-                               (set (make-local-variable 'company-backends)
-		                    (append '((company-solidity company-capf company-dabbrev-code))
-			                    company-backends))
-                               (setq flycheck-solidity-solc-addstd-contracts t)
-                               (setq solidity-flycheck-solium-checker-active t)
-                               (setq solidity-flycheck-solc-checker-active t)
-                               (setq solidity-comment-style (quote slash))
-                               (setq solidity-solium-path "solium")
-		               (yas-minor-mode t)
-			       (company-mode t)
-			       (flycheck-mode)
-                               (lsp-ui-mode t)))))
-   
-   (:name markdown-mode+  :depends (markdown-mode)
-	  :type github :pkgname "milkypostman/markdown-mode-plus")
+(use-package docker)
+(use-package dockerfile-mode)
 
-   (:name eaf
-	  :type github :pkgname "emacs-eaf/emacs-application-framework"
-          :autoloads nil)))
+(use-package rime)
+;; (use-package eaf
+;;   :straight (eaf
+;;              :type git
+;;              :host github
+;;              :repo "emacs-eaf/emacs-application-framework"           
+;;              :files ("*.el" "*.py" "core" "app" "*.json")
+;;              :includes (eaf-pdf-viewer eaf-browser eaf-terminal eaf-music-player eaf-video-player)
+;;              :pre-build (("python" "install-eaf.py" "--install" "pdf-viewer" "browser" "terminal" "video-player" "music-player" "--ignore-sys-deps"))
+;;              ))
+;; (use-package eaf-browser
+;;   :custom
+;;   (eaf-browser-continue-where-left-off t)
+;;   (eaf-browser-enable-adblocker t))
+;; (use-package eaf-pdf-viewer)
+;; (use-package eaf-music-player)
+;; (use-package eaf-video-player)
+;; (use-package eaf-terminal)
 
-
-;; fix elpa bug
-(setq package-check-signature nil)
-
-(setq
- my:el-get-packages
- '(el-get
-   ;; common tools
-   company-mode
-   ;; company-tabnine
-   yasnippet
-   xcscope
-
-   ;; lsp and treemacs
-   treemacs
-   lsp-mode
-   lsp-docker
-   lsp-origami
-   dap-mode
-   lsp-ui
-   lsp-treemacs
-
-   ;; git
-   magit
-   magit-filenotify
-   magit-tramp
-   with-editor ; magit dep
-
-   ;; golang
-   go-mode
-
-   ;; php
-   php-mode
-
-   ;; docker
-   docker
-   docker-tramp
-   dockerfile-mode
-
-   ;; html
-   web-mode
-   company-web
-   emmet-mode
-
-   ;; typescript and javascript
-   js2-mode
-   json-mode
-   json-reformat
-   typescript-mode
-   vue-mode
-   tide
-   prettier-js
-   add-node-modules-path
-
-   ;; css tools
-   css-eldoc
-
-   ;; protobuf
-   protobuf-mode
-
-   ;; rust
-   projectile
-   xterm-color
-   rustic
-
-   ;; dart
-   dart-mode
-   lsp-dart
-   hover
-
-   ;; ethereum
-   solidity-mode
-   
-   ;; misc mode
-   rainbow-mode
-   jsonnet-mode
-   nginx-mode
-   yaml-mode
-   toml-mode
-   markdown-mode
-   markdown-mode+
-   markdown-preview-mode
-   easy-hugo
-   rime
-
-   ;; misc tools
-   eaf
-   xml-rpc-el
-   weblogger-el
-   restclient))
-
-(el-get-cleanup my:el-get-packages)
-(el-get 'sync my:el-get-packages)
-(put 'upcase-region 'disabled nil)
-
-(with-eval-after-load 'tramp
-  (cl-pushnew '("-A")
-              (cadr (assoc 'tramp-login-args
-                           (assoc "ssh" tramp-methods)))
-              :test #'equal))
-
-;; (with-eval-after-load 'company
-;;   (add-to-list 'company-backends 'company-tabnine))
-(defun open-eaf-browser ()
-  "fuc"
-  (interactive)
-  (require 'eaf)
-  (require 'eaf-browser)
-  (call-interactively 'eaf-open-browser))
-(global-set-key (kbd "C-c C-x b") 'open-eaf-browser)
+;; (defun open-eaf-browser ()
+;;   "fuc"
+;;   (interactive)
+;;   (require 'eaf)
+;;   (require 'eaf-browser)
+;;   (call-interactively 'eaf-open-browser))
+;; (global-set-key (kbd "C-c C-x b") 'open-eaf-browser)
 
 (require 's)
 (cl-defmethod lsp-clients-extract-signature-on-hover (contents (_server-id (eql rust-analyzer)))
