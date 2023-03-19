@@ -224,6 +224,8 @@
 
 (use-package docker)
 (use-package dockerfile-mode)
+(use-package k8s-mode)
+(use-package kubernetes)
 
 (use-package rime)
 ;; (use-package eaf
