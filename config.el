@@ -225,3 +225,13 @@
   :custom
   (default-input-method "rime"))
 (use-package xterm-color)
+(use-package org)
+
+;; emacs-webkit is not enabled by default.
+;; To enable it, install build dependencies and run (straight-use-package 'webkit) for once.
+(straight-use-package-lazy
+ '(webkit :type git :host github :repo "akirakyle/emacs-webkit"
+          :branch "main"
+          :files (:defaults "*.js" "*.css" "*.so")
+          :after org
+          :pre-build ("make")))
