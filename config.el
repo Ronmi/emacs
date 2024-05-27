@@ -54,7 +54,7 @@
 (use-package consult-lsp)
 (use-package consult)
 (use-package consult-company)
-(use-package vertico :config (vertico-mode t))
+;;(use-package vertico :config (vertico-mode t))
 (use-package marginalia
   :config (marginalia-mode t)
   :after vertico)
@@ -130,7 +130,9 @@
    ("C-c I" . lsp-ui-imenu)))
 (use-package lsp-docker)
 (use-package lsp-origami)
-(use-package dap-mode)
+(use-package dap-mode
+  :hook
+  (require 'dap-dlv-go))
 (use-package lsp-treemacs
   :custom
   (lsp-treemacs-sync-mode t))
