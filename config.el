@@ -229,3 +229,15 @@
 (use-package xterm-color)
 (use-package org)
 
+(defun my/telega-online-status ()
+  (derived-mode-p 'telega-root-mode 'telega-chat-mode
+		  'telega-image-mode 'telega-webpage-mode))
+
+(use-package telega
+  :straight (:type git :host github :repo "zevlg/telega.el")
+  :custom
+  (telega-use-docker t)
+  (telega-use-images t)
+  (telega-emoji-use-images t)
+  (telega-online-status-function #'my/telega-online-status)
+  :defer t)
