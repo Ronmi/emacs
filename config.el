@@ -246,7 +246,9 @@
   :straight (:host github :repo "copilot-emacs/copilot.el" :files ("*.el"))
   :hook (prog-mode . copilot-mode)
   :bind (:map copilot-completion-map
-              ("TAB" . copilot-accept-completion))
+              ("C-n" . copilot-next-completion)
+              ("C-p" . copilot-previous-completion)
+              ("C-<return>" . copilot-accept-completion))
   :custom
   (copilot-indent-offset-warning-disable t)
   :ensure t)
