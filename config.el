@@ -241,3 +241,10 @@
   (telega-emoji-use-images t)
   (telega-online-status-function #'my/telega-online-status)
   :defer t)
+
+(use-package copilot
+  :straight (:host github :repo "copilot-emacs/copilot.el" :files ("*.el"))
+  :hook (prog-mode . copilot-mode)
+  :bind (:map copilot-completion-map
+              ("TAB" . copilot-accept-completion))
+  :ensure t)
