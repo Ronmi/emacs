@@ -247,4 +247,6 @@
   :hook (prog-mode . copilot-mode)
   :bind (:map copilot-completion-map
               ("TAB" . copilot-accept-completion))
+  :custom
+  (copilot-indent-offset-warning-disable t)
   :ensure t)
