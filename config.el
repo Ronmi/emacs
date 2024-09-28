@@ -88,6 +88,7 @@
     js2-mode json-mode typescript-mode vue-mode tide
     web-mode yaml-mode toml-mode markdown-mode+ css-mode) . lsp-mode)
   :custom
+  (read-process-output-max (* 3 1024 1024))
   (lsp-dired-mode t)
   (lsp-eldoc-enable-hover t)
   (lsp-eldoc-render-all nil)
@@ -95,6 +96,8 @@
   (lsp-signature-auto-activate
    '(:on-trigger-char :after-completion :on-server-request))
   :config
+  ;; disable watch in remote
+  (add-to-list 'lsp-file-watch-ignored-directories "/sshx?:")
   ;; lsp rust hack
   (require 's)
   (cl-defmethod lsp-clients-extract-signature-on-hover (contents (_server-id (eql rust-analyzer)))
