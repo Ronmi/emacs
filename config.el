@@ -237,6 +237,7 @@
   (default-input-method "rime"))
 (use-package xterm-color)
 (use-package org)
+(use-package sql-indent)
 
 (defun my/telega-online-status ()
   (derived-mode-p 'telega-root-mode 'telega-chat-mode
