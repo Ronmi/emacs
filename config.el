@@ -32,6 +32,7 @@
   (inhibit-startup-screen t)
   (make-backup-files nil)
   (size-indication-mode t)
+  (column-number-mode t)
   (smerge-refine-ignore-whitespace t)
   (warning-suppress-types '((comp)))
   :config
