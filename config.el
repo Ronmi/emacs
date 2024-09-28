@@ -262,3 +262,5 @@
   :custom
   (copilot-indent-offset-warning-disable t)
   :ensure t)
+
+(add-to-list 'tramp-remote-path 'tramp-own-remote-path)
