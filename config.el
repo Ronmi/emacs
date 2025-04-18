@@ -262,6 +262,27 @@
   :ensure t)
 
 (add-to-list 'tramp-remote-path 'tramp-own-remote-path)
+
+;; eaf although it does not work on my machine
+;; (use-package eaf
+;;   :straight (eaf
+;;              :type git
+;;              :host github
+;;              :repo "emacs-eaf/emacs-application-framework"
+;;              ;; disable auto install to avoid re-installing every time
+;;              ;; :pre-build ("./install-eaf.py" "--install-all-apps")
+;;              :files ("*.py" "*.json" "*.el" "core" "app" "extension")
+;; 	     :includes (eaf-pdf-viewer
+;; 			eaf-git
+;; 			eaf-browser
+;; 			eaf-map
+;; 			eaf-markdown-previewer)))
+;; (use-package eaf-browser
+;;   :custom
+;;     (eaf-browser-continue-where-left-off t)
+;;     (eaf-browser-enable-adblocker t))
+;; (use-package eaf-markdown-previewer)
+
 ;; writing tool
 
 ;; enabled wc-mode to count words
