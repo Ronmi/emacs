@@ -202,8 +202,8 @@
 ;; use builtin python mode with lsp-pyright
 (use-package lsp-pyright
   :hook (python-mode . (lambda ()
-                          (require 'lsp-pyright)
-                          (lsp))))
+                         (require 'lsp-pyright)
+                         (lsp))))
 
 ;; major modes for misc lang (mostly markups)
 (use-package web-mode)
