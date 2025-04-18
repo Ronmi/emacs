@@ -262,3 +262,16 @@
   :ensure t)
 
 (add-to-list 'tramp-remote-path 'tramp-own-remote-path)
+;; writing tool
+
+;; enabled wc-mode to count words
+(use-package wc-mode)
+;; make wc-mode count CJK words correctly
+(use-package advance-words-count
+  :straight (:host github :repo "LdBeth/advance-words-count.el")
+  :hook (wc-mode . (lambda ()
+               (setq wc-count-words-function
+                     (function
+                      (lambda (start end)
+                        (let ((cnt (advance-words-count start end)))
+                          (+ (car cnt) (car (last cnt))))))))))
