@@ -226,8 +226,6 @@
 
 ;; general tools
 (use-package magit :bind (("C-c C-a" . magit-status)))
-(use-package magit-filenotify)
-(use-package magit-tramp)
 (use-package with-editor)
 (use-package docker)
 (use-package k8s-mode)
