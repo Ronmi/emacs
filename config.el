@@ -86,7 +86,7 @@
   ((go-mode
     php-mode
     rust-mode
-    js2-mode json-mode typescript-mode vue-mode tide
+    js2-mode json-mode typescript-mode vue-mode
     web-mode yaml-mode toml-mode markdown-mode+ css-mode) . lsp-mode)
   :custom
   (read-process-output-max (* 3 1024 1024))
@@ -116,18 +116,20 @@
          ("C-c s d" . lsp-find-definition)
          ("C-c s r" . lsp-find-references)))
 (use-package lsp-ui
+  :after lsp-mode
   :custom
   (lsp-ui-doc-header t)
   (lsp-ui-doc-include-signature t)
   (lsp-ui-doc-max-width 80)
   (lsp-ui-doc-position 'top)
-  (lsp-ui-doc-show-with-mouse nil)
+  (lsp-ui-doc-show-with-mouse t)
   (lsp-ui-doc-show-with-cursor t)
   (lsp-ui-doc-use-childframe t)
   (lsp-ui-doc-use-webkit nil)
   (lsp-ui-flycheck-enable t)
   (lsp-ui-sideline-diagnostic-max-line-length 80)
   (lsp-ui-sideline-show-code-actions t)
+  (lsp-ui-sideline-show-hover t)
   (lsp-ui-sideline-show-symbol nil)
   :bind
   (("C-c d" . lsp-ui-doc-show)
@@ -177,7 +179,7 @@
   (js-chain-indent t)
   (js-indent-align-list-continuation nil)
   (js-indent-level 2)
-  (js-switch-indent-offset 4))
+  (js-switch-indent-offset 2))
 (use-package json-mode)
 (use-package json-reformat)
 (use-package typescript-mode
@@ -192,8 +194,10 @@
   :custom
   (vue-html-extra-indent 0)
   (vue-html-tab-width 2))
-(use-package tide)
 (use-package prettier-js
+  :custom
+  (prettier-js-args '("exec" "--no" "-p" "prettier" "--"))
+  (prettier-js-command "npm")
   :hook
   ((vue-mode typescript-mode) . prettier-js-mode))
 (use-package add-node-modules-path
