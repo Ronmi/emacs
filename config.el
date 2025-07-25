@@ -229,6 +229,19 @@
 (use-package dockerfile-mode)
 
 ;; general tools
+(use-package tramp
+  :defer t
+  :config
+  ;; (eval-after-load "tramp-sh" '(defun tramp-set-remote-path(vec)))
+  (add-to-list 'tramp-remote-path 'tramp-own-remote-path)
+  (add-to-list 'tramp-remote-path "~/bin")
+  (connection-local-set-profile-variables
+   'remote-bash
+   '((explicit-shell-file-name . "/bin/bash")
+     (explicit-bash-args . ("-l" "-i"))))
+  (connection-local-set-profiles
+   '(:application tramp :protocol "ssh")
+   'remote-bash))
 (use-package magit :bind (("C-c C-a" . magit-status)))
 (use-package with-editor)
 (use-package docker)
@@ -289,8 +302,6 @@
   (add-to-list 'lsp-file-watch-ignored-directories "[/\\\\]node_modules\\'")
   (add-to-list 'lsp-file-watch-ignored-directories "[/\\\\]src-capacitor[/\\\\]android[/\\\\](.+[/\\\\])?build\\'")
   :ensure t)
-
-(add-to-list 'tramp-remote-path 'tramp-own-remote-path)
 
 ;; eaf although it does not work on my machine
 ;; (use-package eaf
