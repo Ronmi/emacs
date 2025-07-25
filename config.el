@@ -284,6 +284,10 @@
               ("C-<return>" . copilot-accept-completion))
   :custom
   (copilot-indent-offset-warning-disable t)
+  :config
+  (add-hook 'typescript-mode-hook 'copilot/override-electric-keys)
+  (add-to-list 'lsp-file-watch-ignored-directories "[/\\\\]node_modules\\'")
+  (add-to-list 'lsp-file-watch-ignored-directories "[/\\\\]src-capacitor[/\\\\]android[/\\\\](.+[/\\\\])?build\\'")
   :ensure t)
 
 (add-to-list 'tramp-remote-path 'tramp-own-remote-path)
