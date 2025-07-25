@@ -186,9 +186,9 @@
   :custom
   (typescript-enabled-frameworks '(typescript))
   (typescript-indent-level 2)
-  (lsp-typescript-implementations-code-lens-enabled t)
-  (lsp-typescript-preferences-quote-style "single")
+  (lsp-clients-typescript-prefer-use-project-ts-server t)
   (lsp-typescript-references-code-lens-enabled t)
+  (lsp-typescript-implementations-code-lens-enabled t)
   (lsp-typescript-suggest-complete-function-calls t))
 (use-package vue-mode
   :custom
