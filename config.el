@@ -288,28 +288,6 @@
   ;; continue on to self-insert command. With the copilot overlay cleared, electric-indent-mode will not be misbehave.
   (self-insert-command arg))
 
-(defun copilot/override-electric-keys ()
-  "Override electric keys for copilot."
-  (dolist (char electric-indent-chars)
-    (message "disable electric-indent-mode for %s" (char-to-string char))
-    (define-key copilot-completion-map (vector char) 'copilot/cancel-on-electric-indent-chars)))
-;; (add-hook 'typescript-mode-hook 'copilot/override-electric-keys)
-
-(use-package copilot
-  :straight (:host github :repo "copilot-emacs/copilot.el" :files ("*.el"))
-  :hook (prog-mode . copilot-mode)
-  :bind (:map copilot-completion-map
-              ("C-n" . copilot-next-completion)
-              ("C-p" . copilot-previous-completion)
-              ("C-<return>" . copilot-accept-completion))
-  :custom
-  (copilot-indent-offset-warning-disable t)
-  :config
-  (add-hook 'typescript-mode-hook 'copilot/override-electric-keys)
-  (add-to-list 'lsp-file-watch-ignored-directories "[/\\\\]node_modules\\'")
-  (add-to-list 'lsp-file-watch-ignored-directories "[/\\\\]src-capacitor[/\\\\]android[/\\\\](.+[/\\\\])?build\\'")
-  :ensure t)
-
 ;; eaf although it does not work on my machine
 ;; (use-package eaf
 ;;   :straight (eaf
@@ -343,3 +321,42 @@
                       (lambda (start end)
                         (let ((cnt (advance-words-count start end)))
                           (+ (car cnt) (car (last cnt))))))))))
+
+
+;;;;;;;;;;;;;;;;;;;;; AI tools
+
+;; copilot auto completion
+(defun copilot/override-electric-keys ()
+  "Override electric keys for copilot."
+  (dolist (char electric-indent-chars)
+    (message "disable electric-indent-mode for %s" (char-to-string char))
+    (define-key copilot-completion-map (vector char) 'copilot/cancel-on-electric-indent-chars)))
+(use-package copilot
+  :straight (:host github :repo "copilot-emacs/copilot.el" :files ("*.el"))
+  :hook (prog-mode . copilot-mode)
+  :bind (:map copilot-completion-map
+              ("C-n" . copilot-next-completion)
+              ("C-p" . copilot-previous-completion)
+              ("C-<return>" . copilot-accept-completion))
+  :custom
+  (copilot-indent-offset-warning-disable t)
+  :config
+  (add-hook 'typescript-mode-hook 'copilot/override-electric-keys)
+  (add-to-list 'lsp-file-watch-ignored-directories "[/\\\\]node_modules\\'")
+  (add-to-list 'lsp-file-watch-ignored-directories "[/\\\\]src-capacitor[/\\\\]android[/\\\\](.+[/\\\\])?build\\'")
+  :ensure t)
+
+;; claude code integration
+(use-package eat :straight t)
+(use-package vterm :straight t)
+(use-package claude-code
+  :straight (:type git :host github :repo "stevemolitor/claude-code.el" :branch "main" :depth 1
+                   :files ("*.el" (:exclude "images/*")))
+  :bind-keymap
+  ("C-c c" . claude-code-command-map)
+  :custom
+  (claude-code-terminal-backend 'vterm)
+  (claude-code-program "/usr/bin/env")
+  (claude-code-program-switches '("SHELL=/usr/bin/bash" "/usr/bin/bash" "-l" "-c" "claude"))
+  :config
+  (claude-code-mode))
