@@ -89,7 +89,7 @@
     js2-mode json-mode typescript-mode vue-mode
     web-mode yaml-mode toml-mode markdown-mode+ css-mode) . lsp-mode)
   :custom
-  (read-process-output-max (* 3 1024 1024))
+  (read-process-output-max (* 10 1024 1024))
   (lsp-dired-mode t)
   (lsp-eldoc-enable-hover t)
   (lsp-eldoc-render-all nil)
@@ -97,6 +97,10 @@
   (lsp-signature-auto-activate
    '(:on-trigger-char :after-completion :on-server-request))
   :config
+  (add-to-list 'lsp-disabled-clients '(typescript-mode . vue-semantic-server))
+  (add-to-list 'lsp-disabled-clients '(js-mode . vue-semantic-server))
+  (add-to-list 'lsp-disabled-clients '(json-mode . vue-semantic-server))
+  (add-to-list 'lsp-disabled-clients '(css-mode . vue-semantic-server))
   ;; disable watch in remote
   (add-to-list 'lsp-file-watch-ignored-directories "/sshx?:")
   ;; lsp rust hack
@@ -112,9 +116,12 @@
                       (--take-while (not (s-equals? "```" it)) it)
                       (s-join "" it))))
       (lsp--render-element (concat "```rust\n" sig "\n```"))))
-  :bind (("C-c w r" . lsp-workspace-restart)
-         ("C-c s d" . lsp-find-definition)
-         ("C-c s r" . lsp-find-references)))
+  :bind (("s-l w r" . lsp-workspace-restart)
+         ("s-l s r" . lsp-rename)
+         ("s-l f d" . lsp-find-definition)
+         ("s-l f t" . lsp-find-type-definition)
+         ("s-l f i" . lsp-find-implementation)
+         ("s-l f r" . lsp-find-references)))
 (use-package lsp-ui
   :after lsp-mode
   :custom
@@ -132,8 +139,8 @@
   (lsp-ui-sideline-show-hover t)
   (lsp-ui-sideline-show-symbol nil)
   :bind
-  (("C-c d" . lsp-ui-doc-show)
-   ("C-c I" . lsp-ui-imenu)))
+  (("s-l u d" . lsp-ui-doc-show)
+   ("s-l u i" . lsp-ui-imenu)))
 (use-package lsp-docker)
 (use-package lsp-origami)
 (use-package dap-mode
