@@ -38,8 +38,8 @@
   :config
   ;; demo zh_TW: 示範文字示範文字:示範;文字 english()#[]-+_ 示範文字示範文字示範文字简体中文
   ;; 英文對照組: o01I223344556677:8899;0Oaa english()#[]-+_ bbccddeeffgghhiijjkk1lmmnnOoppqq
-  (custom-set-faces
-   '(default ((t (:inherit nil :extend nil :stipple nil :inverse-video nil :box nil :strike-through nil :overline nil :underline nil :slant normal :weight regular :height 165 :width normal :foundry "文泉驛等寬正黑Nerd"))))))
+ (custom-set-faces
+  '(default ((t (:inherit nil :extend nil :stipple nil :inverse-video nil :box nil :strike-through nil :overline nil :underline nil :slant normal :weight regular :height 181 :width normal :foundry "DAMA" :family "UbuntuMono Nerd Font Mono"))))))
 
 (use-package all-the-icons)
 
