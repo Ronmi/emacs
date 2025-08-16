@@ -38,8 +38,9 @@
   :config
   ;; demo zh_TW: 示範文字示範文字:示範;文字 english()#[]-+_ 示範文字示範文字示範文字简体中文
   ;; 英文對照組: o01I223344556677:8899;0Oaa english()#[]-+_ bbccddeeffgghhiijjkk1lmmnnOoppqq
+  ;; 長度:01234567 201234567 301234567 401234567 501234567 601234567 7012
  (custom-set-faces
-  '(default ((t (:inherit nil :extend nil :stipple nil :inverse-video nil :box nil :strike-through nil :overline nil :underline nil :slant normal :weight regular :height 181 :width normal :foundry "DAMA" :family "UbuntuMono Nerd Font Mono"))))))
+  '(default ((t (:inherit nil :extend nil :stipple nil :inverse-video nil :box nil :strike-through nil :overline nil :underline nil :slant normal :weight regular :height 151 :width normal :foundry "DAMA" :family "UbuntuMono Nerd Font Mono"))))))
 
 (use-package all-the-icons)
 
