@@ -35,6 +35,7 @@
   (column-number-mode t)
   (smerge-refine-ignore-whitespace t)
   (warning-suppress-types '((comp)))
+  (warning-minimum-level :emergency)
   :config
   ;; demo zh_TW: 示範文字示範文字:示範;文字 english()#[]-+_ 示範文字示範文字示範文字简体中文
   ;; 英文對照組: o01I223344556677:8899;0Oaa english()#[]-+_ bbccddeeffgghhiijjkk1lmmnnOoppqq
