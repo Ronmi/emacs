@@ -33,6 +33,7 @@
   (make-backup-files nil)
   (size-indication-mode t)
   (column-number-mode t)
+  (custom-file "~/.emacs.d/custom.el")
   (smerge-refine-ignore-whitespace t)
   (warning-suppress-types '((comp)))
   (warning-minimum-level :emergency)
@@ -41,7 +42,9 @@
   ;; 英文對照組: o01I223344556677:8899;0Oaa english()#[]-+_ bbccddeeffgghhiijjkk1lmmnnOoppqq
   ;; 長度:01234567 201234567 301234567 401234567 501234567 601234567 7012
  (custom-set-faces
-  '(default ((t (:inherit nil :extend nil :stipple nil :inverse-video nil :box nil :strike-through nil :overline nil :underline nil :slant normal :weight regular :height 151 :width normal :foundry "DAMA" :family "UbuntuMono Nerd Font Mono"))))))
+  '(default ((t (:inherit nil :extend nil :stipple nil :inverse-video nil :box nil :strike-through nil :overline nil :underline nil :slant normal :weight regular :height 151 :width normal :foundry "DAMA" :family "UbuntuMono Nerd Font Mono")))))
+ (load custom-file))
+
 
 (use-package all-the-icons)
 
