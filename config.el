@@ -35,6 +35,7 @@
   (column-number-mode t)
   (custom-file "~/.emacs.d/custom.el")
   (smerge-refine-ignore-whitespace t)
+  (auth-sources '(password-store))
   (warning-suppress-types '((comp)))
   (warning-minimum-level :emergency)
   :config
@@ -265,6 +266,7 @@
 (use-package xterm-color)
 (use-package org)
 (use-package sql-indent)
+(use-package pass)
 
 (defun my/telega-online-status ()
   (derived-mode-p 'telega-root-mode 'telega-chat-mode
