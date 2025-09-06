@@ -19,9 +19,6 @@
       straight-use-package-by-default t)
 (straight-use-package 'use-package)
 
-(straight-use-package
- '(systemd :type git :host github :repo "widefox/systemd-mode"))
-
 (use-package emacs
   :custom
   (ansi-color-names-vector
@@ -267,6 +264,7 @@
 (use-package org)
 (use-package sql-indent)
 (use-package pass)
+(use-package systemd :straight (:type git :host github :repo "widefox/systemd-mode"))
 
 (defun my/telega-online-status ()
   (derived-mode-p 'telega-root-mode 'telega-chat-mode
