@@ -227,11 +227,15 @@
   (emmet-indentation 2)
   :hook
   html-mode)
-(use-package yaml-mode)
-(use-package toml-mode)
-(use-package markdown-mode+)
+(use-package yaml-mode
+  :hook (yaml-mode . lsp-deferred))
+(use-package toml-mode
+  :hook (toml-mode . lsp-deferred))
+(use-package markdown-mode+
+  :hook (markdown-mode . lsp-deferred))
 (use-package markdown-preview-mode)
-(use-package protobuf-mode)
+(use-package protobuf-mode
+  :hook (protobuf-mode . lsp-deferred))
 (use-package css-eldoc)
 
 ;; major modes for config files
@@ -351,17 +355,17 @@
   (add-to-list 'lsp-file-watch-ignored-directories "[/\\\\]src-capacitor[/\\\\]android[/\\\\](.+[/\\\\])?build\\'")
   :ensure t)
 
-;; claude code integration
-(use-package eat :straight t)
-(use-package vterm :straight t)
-(use-package claude-code
-  :straight (:type git :host github :repo "stevemolitor/claude-code.el" :branch "main" :depth 1
-                   :files ("*.el" (:exclude "images/*")))
-  :bind-keymap
-  ("C-c c" . claude-code-command-map)
-  :custom
-  (claude-code-terminal-backend 'vterm)
-  (claude-code-program "/usr/bin/env")
-  (claude-code-program-switches '("SHELL=/usr/bin/bash" "/usr/bin/bash" "-l" "-c" "claude"))
-  :config
-  (claude-code-mode))
+;; ;; claude code integration
+;; (use-package eat :straight t)
+;; (use-package vterm :straight t)
+;; (use-package claude-code
+;;   :straight (:type git :host github :repo "stevemolitor/claude-code.el" :branch "main" :depth 1
+;;                    :files ("*.el" (:exclude "images/*")))
+;;   :bind-keymap
+;;   ("C-c c" . claude-code-command-map)
+;;   :custom
+;;   (claude-code-terminal-backend 'vterm)
+;;   (claude-code-program "/usr/bin/env")
+;;   (claude-code-program-switches '("SHELL=/usr/bin/bash" "/usr/bin/bash" "-l" "-c" "claude"))
+;;   :config
+;;   (claude-code-mode))
