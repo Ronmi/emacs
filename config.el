@@ -124,7 +124,17 @@
          ("s-l f d" . lsp-find-definition)
          ("s-l f t" . lsp-find-type-definition)
          ("s-l f i" . lsp-find-implementation)
-         ("s-l f r" . lsp-find-references)))
+         ("s-l f r" . lsp-find-references)
+         ("s-l s a" . lsp-ui-sideline-apply-code-actions)
+         ;; key maps when s-l is not usable like in wsl
+         ("C-c l w" . lsp-workspace-restart)
+         ("C-c l n" . lsp-rename)
+         ("C-c l d" . lsp-find-definition)
+         ("C-c l t" . lsp-find-type-definition)
+         ("C-c l i" . lsp-find-implementation)
+         ("C-c l r" . lsp-find-references)
+         ("C-c l a" . lsp-ui-sideline-apply-code-actions)
+         ("C-c l e" . lsp-treemacs-error-list)))
 (use-package lsp-ui
   :after lsp-mode
   :custom
