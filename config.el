@@ -219,6 +219,21 @@
                          (require 'lsp-pyright)
                          (lsp))))
 
+;; protobuf mode (with clang-format)
+;; lsp mode is not enabled with protobuf mode by default
+(use-package clang-format+
+  :straight
+  (clang-format+
+   :type git
+   :host github
+   :repo "SavchenkoValeriy/emacs-clang-format-plus")
+  :hook
+  (protobuf-mode . clang-format+-mode)
+  :custom
+  (clang-format+-context 'buffer))
+(use-package protobuf-mode)
+
+
 ;; major modes for misc lang (mostly markups)
 (use-package web-mode)
 (use-package company-web)
@@ -234,8 +249,6 @@
 (use-package markdown-mode+
   :hook (markdown-mode . lsp-deferred))
 (use-package markdown-preview-mode)
-(use-package protobuf-mode
-  :hook (protobuf-mode . lsp-deferred))
 (use-package css-eldoc)
 
 ;; major modes for config files
