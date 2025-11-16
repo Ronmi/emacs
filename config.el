@@ -55,9 +55,18 @@
   :after (company all-the-icons)
   :hook (company-mode . company-box-mode)
   :init (setq company-box-icons-alist 'company-box-icons-all-the-icons))
-(use-package consult-lsp)
 (use-package consult
-  :bind (("C-x b" . consult-buffer)))
+  :bind (("C-x b" . consult-buffer)
+         ("C-c c g" . consult-grep)
+         ("C-c c f" . consult-find)
+         ("C-c c l" . consult-line)
+         ("C-c c m" . consult-mark)
+         ))
+(use-package consult-lsp)
+(use-package consult-jq
+  :straight (:host github :repo "elken/consult-jq")
+  :bind (("C-c c q" . consult-jq))
+  :commands (consult-jq))
 (use-package consult-company)
 ;;(use-package vertico :config (vertico-mode t))
 (use-package marginalia
