@@ -56,7 +56,8 @@
   :hook (company-mode . company-box-mode)
   :init (setq company-box-icons-alist 'company-box-icons-all-the-icons))
 (use-package consult-lsp)
-(use-package consult)
+(use-package consult
+  :bind (("C-x b" . consult-buffer)))
 (use-package consult-company)
 ;;(use-package vertico :config (vertico-mode t))
 (use-package marginalia
