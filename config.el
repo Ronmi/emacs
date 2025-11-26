@@ -55,6 +55,22 @@
   :after (company all-the-icons)
   :hook (company-mode . company-box-mode)
   :init (setq company-box-icons-alist 'company-box-icons-all-the-icons))
+(use-package helm
+  :bind
+  (("M-x" . helm-M-x)
+   ("C-x C-f" . helm-find-files))
+  :config
+  (helm-mode 1)
+  ;; (helm-autoresize-mode 1)
+  :straight t)
+(use-package helm-company
+  :bind
+  (:map prog-mode-map
+        ("C-'" . helm-company))
+  ;; (:map company-mode-map ("C-:" . helm-company))
+  ;; (:map company-active-map ("C-:" . helm-company))
+  :straight t)
+(use-package helm-systemd :straight t)
 (use-package consult
   :bind (("C-x b" . consult-buffer)
          ("C-c c g" . consult-grep)
