@@ -388,8 +388,28 @@
   (add-to-list 'lsp-file-watch-ignored-directories "[/\\\\]src-capacitor[/\\\\]android[/\\\\](.+[/\\\\])?build\\'")
   :ensure t)
 
+
+(use-package vterm :straight t)
+(use-package claude-code
+  :straight (:type git :host github :repo "stevemolitor/claude-code.el" :branch "main" :depth 1
+                   :files ("*.el" (:exclude "images/*")))
+  :custom
+  (claude-code-terminal-backend 'vterm)
+  (claude-code-program "/usr/bin/env")
+  (claude-code-program-switches '("SHELL=/usr/bin/bash" "/usr/bin/bash" "-l" "-c" "claude"))
+  :config
+  (claude-code-mode))
 (use-package claude-code-ide
   :straight (:type git :host github :repo "manzaltu/claude-code-ide.el")
-  :bind ("C-c C-c" . claude-code-ide-menu) ; Set your favorite keybinding
+  :bind ("C-c C-c" . claude-code-ide-menu)
   :config
-  (claude-code-ide-emacs-tools-setup)) ; Optionally enable Emacs MCP tools
+  (claude-code-ide-emacs-tools-setup))
+(use-package ai-code-interface
+  :straight (:host github :repo "tninja/ai-code-interface.el")
+  :config
+  (ai-code-set-backend  'claude-code-ide) ;; use claude-code-ide as backend
+  ;; Enable global keybinding for the main menu
+  (global-set-key (kbd "C-c a") #'ai-code-menu)
+  ;; Optional: Set up Magit integration for AI commands in Magit popups
+  (with-eval-after-load 'magit
+    (ai-code-magit-setup-transients)))
