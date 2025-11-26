@@ -388,17 +388,8 @@
   (add-to-list 'lsp-file-watch-ignored-directories "[/\\\\]src-capacitor[/\\\\]android[/\\\\](.+[/\\\\])?build\\'")
   :ensure t)
 
-;; ;; claude code integration
-;; (use-package eat :straight t)
-;; (use-package vterm :straight t)
-;; (use-package claude-code
-;;   :straight (:type git :host github :repo "stevemolitor/claude-code.el" :branch "main" :depth 1
-;;                    :files ("*.el" (:exclude "images/*")))
-;;   :bind-keymap
-;;   ("C-c c" . claude-code-command-map)
-;;   :custom
-;;   (claude-code-terminal-backend 'vterm)
-;;   (claude-code-program "/usr/bin/env")
-;;   (claude-code-program-switches '("SHELL=/usr/bin/bash" "/usr/bin/bash" "-l" "-c" "claude"))
-;;   :config
-;;   (claude-code-mode))
+(use-package claude-code-ide
+  :straight (:type git :host github :repo "manzaltu/claude-code-ide.el")
+  :bind ("C-c C-c" . claude-code-ide-menu) ; Set your favorite keybinding
+  :config
+  (claude-code-ide-emacs-tools-setup)) ; Optionally enable Emacs MCP tools
