@@ -290,6 +290,8 @@
 ;; major modes for config files
 (use-package nginx-mode)
 (use-package dockerfile-mode)
+(use-package nix-mode)
+(use-package systemd :straight (:type git :host github :repo "widefox/systemd-mode"))
 
 ;; general tools
 (use-package tramp
@@ -317,7 +319,6 @@
 (use-package org)
 (use-package sql-indent)
 (use-package pass)
-(use-package systemd :straight (:type git :host github :repo "widefox/systemd-mode"))
 
 (defun my/telega-online-status ()
   (derived-mode-p 'telega-root-mode 'telega-chat-mode
