@@ -1,8 +1,11 @@
 
 (defvar bootstrap-version)
 (let ((bootstrap-file
-       (expand-file-name "straight/repos/straight.el/bootstrap.el" user-emacs-directory))
-      (bootstrap-version 6))
+       (expand-file-name
+        "straight/repos/straight.el/bootstrap.el"
+        (or (bound-and-true-p straight-base-dir)
+            user-emacs-directory)))
+      (bootstrap-version 7))
   (unless (file-exists-p bootstrap-file)
     (with-current-buffer
         (url-retrieve-synchronously
@@ -42,6 +45,7 @@
   '(default ((t (:inherit nil :extend nil :stipple nil :inverse-video nil :box nil :strike-through nil :overline nil :underline nil :slant normal :weight regular :height 151 :width normal :foundry "DAMA" :family "UbuntuMono Nerd Font Mono"))))))
 
 
+;; icons look broken on a new machine? run `M-x all-the-icons-install-fonts'
 (use-package all-the-icons)
 
 ;; auto complete and related layout packages
@@ -76,7 +80,10 @@
          ("C-c c l" . consult-line)
          ("C-c c m" . consult-mark)
          ))
-(use-package consult-lsp)
+(use-package consult-lsp
+  :bind (("C-c c s" . consult-lsp-symbols)
+         ("C-c c S" . consult-lsp-file-symbols)
+         ("C-c c e" . consult-lsp-diagnostics)))
 (use-package consult-jq
   :straight (:host github :repo "elken/consult-jq")
   :bind (("C-c c q" . consult-jq))
@@ -98,8 +105,6 @@
   :defer t
   :after yasnippet)
 
-(defconst my-fuck '(go-mode json-mode))
-
 ;; lsp with builtin eglot, simple but not guarantee to be fast
 ;; (use-package eglot
 ;;   :straight (:type built-in)
@@ -110,8 +115,9 @@
   :hook
   ((go-mode
     rust-mode
-    js-mode json-mode typescript-mode
-    web-mode yaml-mode toml-mode markdown-mode css-mode scss-mode) . lsp-mode)
+    js-mode json-mode typescript-ts-mode tsx-ts-mode
+    web-mode yaml-mode toml-mode markdown-mode css-mode scss-mode
+    protobuf-mode) . lsp-mode)
   :custom
   (read-process-output-max (* 10 1024 1024))
   (lsp-dired-mode t)
@@ -120,7 +126,11 @@
   (lsp-signature-auto-activate
    '(:on-trigger-char :after-completion :on-server-request))
   :config
-  (add-to-list 'lsp-disabled-clients '(typescript-mode . vue-semantic-server))
+  (add-to-list 'lsp-disabled-clients '(typescript-ts-mode . vue-semantic-server))
+  (add-to-list 'lsp-disabled-clients '(tsx-ts-mode . vue-semantic-server))
+  ;; TypeScript 7 ships no tsserver; use its native LSP (tsgo) instead.
+  ;; Install with `M-x lsp-install-server RET tsgo'
+  (add-to-list 'lsp-disabled-clients 'ts-ls)
   (add-to-list 'lsp-disabled-clients '(js-mode . vue-semantic-server))
   (add-to-list 'lsp-disabled-clients '(json-mode . vue-semantic-server))
   (add-to-list 'lsp-disabled-clients '(css-mode . vue-semantic-server))
@@ -156,7 +166,7 @@
          ("C-c l i" . lsp-find-implementation)
          ("C-c l r" . lsp-find-references)
          ("C-c l a" . lsp-ui-sideline-apply-code-actions)
-         ("C-c l e" . lsp-treemacs-error-list)))
+         ("C-c l e" . lsp-treemacs-errors-list)))
 (use-package lsp-ui
   :after lsp-mode
   :custom
@@ -215,28 +225,34 @@
   (js-indent-level 2)
   (js-switch-indent-offset 2))
 (use-package json-mode)
-(use-package typescript-mode
+;; builtin tree-sitter modes; grammars are built on first start (needs a C compiler)
+(use-package typescript-ts-mode
+  :straight (:type built-in)
+  :mode (("\\.ts\\'" . typescript-ts-mode)
+         ("\\.tsx\\'" . tsx-ts-mode))
+  :init
+  (setq treesit-language-source-alist
+        '((typescript "https://github.com/tree-sitter/tree-sitter-typescript" "v0.23.2" "typescript/src")
+          (tsx "https://github.com/tree-sitter/tree-sitter-typescript" "v0.23.2" "tsx/src")))
+  (dolist (lang '(typescript tsx))
+    (unless (treesit-language-available-p lang)
+      (treesit-install-language-grammar lang)))
   :custom
-  (typescript-enabled-frameworks '(typescript))
-  (typescript-indent-level 2)
-  (lsp-clients-typescript-prefer-use-project-ts-server t)
-  (lsp-typescript-references-code-lens-enabled t)
-  (lsp-typescript-implementations-code-lens-enabled t)
-  (lsp-typescript-suggest-complete-function-calls t))
+  (typescript-ts-mode-indent-offset 2))
 (defun my/jsx-buffer-p ()
-  "Return non-nil if current buffer visits a .jsx or .tsx file."
+  "Return non-nil if current buffer visits a .jsx file."
   (and buffer-file-name
-       (string-match-p "\\.[jt]sx\\'" buffer-file-name)))
+       (string-match-p "\\.jsx\\'" buffer-file-name)))
 (use-package prettier-js
   :custom
   (prettier-js-args '("exec" "--no" "-p" "prettier" "--"))
   (prettier-js-command "npm")
   :hook
-  ((typescript-mode . prettier-js-mode)
+  (((typescript-ts-mode tsx-ts-mode) . prettier-js-mode)
    (web-mode . (lambda () (when (my/jsx-buffer-p) (prettier-js-mode))))))
 (use-package add-node-modules-path
   :hook
-  ((js-mode typescript-mode web-mode) . add-node-modules-path))
+  ((js-mode typescript-ts-mode tsx-ts-mode web-mode) . add-node-modules-path))
 ;; use builtin python mode with lsp-pyright
 (use-package lsp-pyright
   :hook (python-mode . (lambda ()
@@ -244,7 +260,8 @@
                          (lsp))))
 
 ;; protobuf mode (with clang-format)
-;; lsp mode is not enabled with protobuf mode by default
+;; lsp via `buf lsp serve` (hooked in lsp-mode above); imports resolve
+;; against the buf.yaml module root
 (use-package clang-format+
   :straight
   (clang-format+
@@ -255,14 +272,17 @@
   (protobuf-mode . clang-format+-mode)
   :custom
   (clang-format+-context 'buffer))
-(use-package protobuf-mode)
+(use-package protobuf-mode
+  :custom
+  ;; lsp-mode still defaults to `buf beta lsp', removed in newer buf
+  (lsp-buf-args '("lsp" "serve" "--timeout" "0" "--log-format" "json")))
 
 
 ;; major modes for misc lang (mostly markups)
 (use-package web-mode
-  :mode "\\.[jt]sx\\'"
+  :mode ("\\.jsx\\'" "\\.html?\\'")
   :custom
-  (web-mode-content-types-alist '(("jsx" . "\\.[jt]sx\\'")))
+  (web-mode-content-types-alist '(("jsx" . "\\.jsx\\'")))
   (web-mode-markup-indent-offset 2)
   (web-mode-code-indent-offset 2)
   (web-mode-css-indent-offset 2))
@@ -273,12 +293,9 @@
   (html-mode web-mode))
 (use-package ssass-mode
   :mode "\\.sass\\'")
-(use-package yaml-mode
-  :hook (yaml-mode . lsp-deferred))
-(use-package toml-mode
-  :hook (toml-mode . lsp-deferred))
-(use-package markdown-mode
-  :hook (markdown-mode . lsp-deferred))
+(use-package yaml-mode)
+(use-package toml-mode)
+(use-package markdown-mode)
 (use-package markdown-preview-mode)
 
 ;; major modes for config files
@@ -302,7 +319,7 @@
   (connection-local-set-profiles
    '(:application tramp :protocol "ssh")
    'remote-bash))
-(use-package magit :bind (("C-c C-a" . magit-status)))
+(use-package magit)
 (use-package with-editor)
 (use-package docker)
 (use-package k8s-mode)
@@ -329,20 +346,6 @@
   (telega-emoji-use-images t)
   (telega-online-status-function #'my/telega-online-status)
   :defer t)
-
-(defun copilot/cancel-on-electric-indent-chars (arg)
-  "Cancel copilot completion eagerly when electric-indent-mode is triggered."
-
-  (interactive "p")
-
-  ;; clear the overlay if visible and keypress is in electric-indent-chars. Not really a rejection, so maybe let's not notify it as such?
-  (when (and (copilot--overlay-visible)
-             (memq last-command-event electric-indent-chars))
-    (delete-overlay copilot--overlay)
-    (setq copilot--real-posn nil))
-
-  ;; continue on to self-insert command. With the copilot overlay cleared, electric-indent-mode will not be misbehave.
-  (self-insert-command arg))
 
 ;; eaf although it does not work on my machine
 ;; (use-package eaf
@@ -382,11 +385,41 @@
 ;;;;;;;;;;;;;;;;;;;;; AI tools
 
 ;; copilot auto completion
-(defun copilot/override-electric-keys ()
-  "Override electric keys for copilot."
-  (dolist (char electric-indent-chars)
-    (message "disable electric-indent-mode for %s" (char-to-string char))
-    (define-key copilot-completion-map (vector char) 'copilot/cancel-on-electric-indent-chars)))
+
+;; Copilot only replaces text up to the end of the current line, so a
+;; completion ending with `}' duplicates a closer already sitting after
+;; point (same line or below).  Drop such closers when the accepted
+;; completion left the buffer with unmatched closers it did not have before.
+(defun my/paren-depth ()
+  "Return the paren depth at the end of the buffer."
+  (car (save-excursion (syntax-ppss (point-max)))))
+
+(defun my/copilot-drop-extra-closers (depth-before)
+  "Delete closers after point made redundant by an accepted completion.
+DEPTH-BEFORE is `my/paren-depth' before the completion was inserted."
+  (let ((closer (save-excursion (skip-chars-backward " \t\n") (char-before))))
+    (save-excursion
+      (while (and (memq closer '(?\) ?\] ?\}))
+                  ;; below zero means unmatched closers; a drop to zero
+                  ;; just closes a block the user left open
+                  (< (my/paren-depth) (min depth-before 0))
+                  (progn (skip-chars-forward " \t\n")
+                         (eq (char-after) closer)))
+        (delete-char 1)
+        ;; remove the line too if the closer was alone on it
+        (when (and (looking-at "[ \t]*$")
+                   (looking-back "^[ \t]*" (line-beginning-position)))
+          (delete-region (line-beginning-position)
+                         (min (point-max) (1+ (line-end-position)))))))))
+
+(defun my/copilot-accept-balanced (orig &rest args)
+  "Call ORIG with ARGS, then drop closers duplicated by the completion."
+  (let ((depth (my/paren-depth)))
+    (prog1 (apply orig args)
+      ;; overlay still visible means a partial accept; leave it alone
+      (unless (copilot--overlay-visible)
+        (my/copilot-drop-extra-closers depth)))))
+
 (use-package copilot
   :straight (:host github :repo "copilot-emacs/copilot.el" :files ("*.el"))
   :hook (prog-mode . copilot-mode)
@@ -397,7 +430,7 @@
   :custom
   (copilot-indent-offset-warning-disable t)
   :config
-  (add-hook 'typescript-mode-hook 'copilot/override-electric-keys))
+  (advice-add 'copilot-accept-completion :around #'my/copilot-accept-balanced))
 
 
 ;; load last so packages referenced by custom.el are already installed

@@ -1,5 +1,8 @@
 #!/bin/bash
 
+REPO='https://github.com/Ronmi/emacs'
+DIR="$HOME/.emacs.d"
+
 which git > /dev/null 2>&1
 if  [[ $? != 0 ]]
 then
@@ -7,20 +10,28 @@ then
     exit 1
 fi
 
-if [[ ! -d ~/.emacs.d ]]
+if [[ -d "$DIR" ]]
 then
-    git clone https://github.com/Ronmi/emacs ~/.emacs.d
-else
-    G="git --git-dir=$HOME/.emacs.d/.git --work-tree=$HOME/.emacs.d"
-    $G remote -v | grep -F 'https://github.com/Ronmi/emacs' > /dev/null 2>&1
+    G="git -C $DIR"
+    $G remote -v | grep -F "$REPO" > /dev/null 2>&1
     if [[ $? == 0 ]]
     then
 	$G pull --ff-only
 	exit $?
     fi
 
-    echo "~/.emacs.d exists, aborting"
+    echo "$DIR exists, aborting"
     exit 1
 fi
 
-ln -sf ~/.emacs.d/config.el ~/.emacs
+# do not clobber an existing ~/.emacs unless it already points to us
+if [[ -e ~/.emacs || -L ~/.emacs ]] && [[ "$(readlink ~/.emacs)" != "$DIR/config.el" ]]
+then
+    echo "~/.emacs exists, aborting"
+    exit 1
+fi
+
+git clone "$REPO" "$DIR" || exit 1
+ln -sf "$DIR/config.el" ~/.emacs
+# config.el always loads custom.el, which holds per-machine settings
+touch "$DIR/custom.el"
