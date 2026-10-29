@@ -3,5 +3,6 @@
 !config.el
 !snippets
 !install.sh
+!early-init.el
 !README.md
 custom.el

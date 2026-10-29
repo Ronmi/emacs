@@ -24,7 +24,6 @@
   (ansi-color-names-vector
    ["#212526" "#ff4b4b" "#b4fa70" "#fce94f" "#729fcf" "#e090d7" "#8cc4ff" "#eeeeec"])
   (custom-enabled-themes '(tsdh-dark))
-  (gnutls-algorithm-priority "NORMAL:-VERS-TLS1.3")
   (indent-tabs-mode nil)
   (inhibit-startup-screen t)
   (make-backup-files nil)
@@ -40,8 +39,7 @@
   ;; 英文對照組: o01I223344556677:8899;0Oaa english()#[]-+_ bbccddeeffgghhiijjkk1lmmnnOoppqq
   ;; 長度:01234567 201234567 301234567 401234567 501234567 601234567 7012
  (custom-set-faces
-  '(default ((t (:inherit nil :extend nil :stipple nil :inverse-video nil :box nil :strike-through nil :overline nil :underline nil :slant normal :weight regular :height 151 :width normal :foundry "DAMA" :family "UbuntuMono Nerd Font Mono")))))
- (load custom-file))
+  '(default ((t (:inherit nil :extend nil :stipple nil :inverse-video nil :box nil :strike-through nil :overline nil :underline nil :slant normal :weight regular :height 151 :width normal :foundry "DAMA" :family "UbuntuMono Nerd Font Mono"))))))
 
 
 (use-package all-the-icons)
@@ -49,28 +47,28 @@
 ;; auto complete and related layout packages
 (use-package company
   :bind (:map prog-mode-map
-              ("C-i" . company-indent-or-complete-common))
+              ("C-i" . company-indent-or-complete-common)
+              ("C-'" . consult-company))
   :config (global-company-mode t))
 (use-package company-box
   :after (company all-the-icons)
   :hook (company-mode . company-box-mode)
   :init (setq company-box-icons-alist 'company-box-icons-all-the-icons))
-(use-package helm
-  :bind
-  (("M-x" . helm-M-x)
-   ("C-x C-f" . helm-find-files))
-  :config
-  (helm-mode 1)
-  ;; (helm-autoresize-mode 1)
-  :straight t)
-(use-package helm-company
-  :bind
-  (:map prog-mode-map
-        ("C-'" . helm-company))
-  ;; (:map company-mode-map ("C-:" . helm-company))
-  ;; (:map company-active-map ("C-:" . helm-company))
-  :straight t)
-(use-package helm-systemd :straight t)
+(use-package vertico
+  :config (vertico-mode t))
+;; DEL/M-DEL remove a whole path component in find-file
+(use-package vertico-directory
+  :straight nil
+  :after vertico
+  :bind (:map vertico-map
+              ("DEL" . vertico-directory-delete-char)
+              ("M-DEL" . vertico-directory-delete-word))
+  :hook (rfn-eshadow-update-overlay . vertico-directory-tidy))
+(use-package orderless
+  :custom
+  (completion-styles '(orderless basic))
+  ;; keep prefix-style TAB completion for file names
+  (completion-category-overrides '((file (styles basic partial-completion)))))
 (use-package consult
   :bind (("C-x b" . consult-buffer)
          ("C-c c g" . consult-grep)
@@ -86,13 +84,11 @@
 (use-package consult-company)
 ;;(use-package vertico :config (vertico-mode t))
 (use-package marginalia
-  :config (marginalia-mode t)
-  :after vertico)
+  :config (marginalia-mode t))
 (use-package all-the-icons-completion
   :after marginalia
   :hook (marginalia-mode . all-the-icons-completion-marginalia-setup)
   :init (all-the-icons-completion-mode))
-(use-package xcscope)
 (use-package treemacs)
 (use-package yasnippet
   :diminish yas-minor-mode
@@ -113,16 +109,14 @@
 (use-package lsp-mode
   :hook
   ((go-mode
-    php-mode
     rust-mode
-    js2-mode json-mode typescript-mode vue-mode
-    web-mode yaml-mode toml-mode markdown-mode+ css-mode) . lsp-mode)
+    js-mode json-mode typescript-mode
+    web-mode yaml-mode toml-mode markdown-mode css-mode scss-mode) . lsp-mode)
   :custom
   (read-process-output-max (* 10 1024 1024))
   (lsp-dired-mode t)
   (lsp-eldoc-enable-hover t)
   (lsp-eldoc-render-all nil)
-  (lsp-prefer-flymake nil)
   (lsp-signature-auto-activate
    '(:on-trigger-char :after-completion :on-server-request))
   :config
@@ -132,6 +126,8 @@
   (add-to-list 'lsp-disabled-clients '(css-mode . vue-semantic-server))
   ;; disable watch in remote
   (add-to-list 'lsp-file-watch-ignored-directories "/sshx?:")
+  (add-to-list 'lsp-file-watch-ignored-directories "[/\\\\]node_modules\\'")
+  (add-to-list 'lsp-file-watch-ignored-directories "[/\\\\]src-capacitor[/\\\\]android[/\\\\](.+[/\\\\])?build\\'")
   ;; lsp rust hack
   (require 's)
   (cl-defmethod lsp-clients-extract-signature-on-hover (contents (_server-id (eql rust-analyzer)))
@@ -172,7 +168,6 @@
   (lsp-ui-doc-show-with-cursor t)
   (lsp-ui-doc-use-childframe t)
   (lsp-ui-doc-use-webkit nil)
-  (lsp-ui-flycheck-enable t)
   (lsp-ui-sideline-diagnostic-max-line-length 80)
   (lsp-ui-sideline-show-code-actions t)
   (lsp-ui-sideline-show-symbol nil)
@@ -180,10 +175,8 @@
   :bind
   (("s-l u d" . lsp-ui-doc-show)
    ("s-l u i" . lsp-ui-imenu)))
-(use-package lsp-docker)
-(use-package lsp-origami)
 (use-package dap-mode
-  :hook
+  :config
   (require 'dap-dlv-go))
 (use-package lsp-treemacs
   :custom
@@ -199,9 +192,7 @@
   (gofmt-command "goimports")
   (flycheck-go-gofmt-executable "goimports")
   (lsp-clients-go-server "gopls")
-  (flycheck-go-vet-executable "go vet")
   (flycheck-go-vet-shadow t)
-  (go-eldoc-gocode-args '("-cache"))
   (godoc-reuse-buffer t)
   :config
   (setq
@@ -209,25 +200,21 @@
    go-play-browse-function 'browse-url)
   :hook
   (before-save . gofmt-before-save))
-(use-package php-mode
-  :custom
-  (flycheck-phpcs-standard "PSR2")
-  (php-mode-coding-style 'psr2))
 (use-package rust-mode
   :custom
   (lsp-rust-analyzer-display-chaining-hints t)
   (lsp-rust-analyzer-display-parameter-hints t)
   (lsp-rust-analyzer-proc-macro-enable t)
-  (lsp-rust-analyzer-server-display-inlay-hints t)
+  (lsp-inlay-hint-enable t)
   (lsp-rust-server 'rust-analyzer))
-(use-package js2-mode
+(use-package js
+  :straight (:type built-in)
   :custom
   (js-chain-indent t)
   (js-indent-align-list-continuation nil)
   (js-indent-level 2)
   (js-switch-indent-offset 2))
 (use-package json-mode)
-(use-package json-reformat)
 (use-package typescript-mode
   :custom
   (typescript-enabled-frameworks '(typescript))
@@ -236,19 +223,20 @@
   (lsp-typescript-references-code-lens-enabled t)
   (lsp-typescript-implementations-code-lens-enabled t)
   (lsp-typescript-suggest-complete-function-calls t))
-(use-package vue-mode
-  :custom
-  (vue-html-extra-indent 0)
-  (vue-html-tab-width 2))
+(defun my/jsx-buffer-p ()
+  "Return non-nil if current buffer visits a .jsx or .tsx file."
+  (and buffer-file-name
+       (string-match-p "\\.[jt]sx\\'" buffer-file-name)))
 (use-package prettier-js
   :custom
   (prettier-js-args '("exec" "--no" "-p" "prettier" "--"))
   (prettier-js-command "npm")
   :hook
-  ((vue-mode typescript-mode) . prettier-js-mode))
+  ((typescript-mode . prettier-js-mode)
+   (web-mode . (lambda () (when (my/jsx-buffer-p) (prettier-js-mode))))))
 (use-package add-node-modules-path
   :hook
-  ((vue-mode typescript-mode) . add-node-modules-path))
+  ((js-mode typescript-mode web-mode) . add-node-modules-path))
 ;; use builtin python mode with lsp-pyright
 (use-package lsp-pyright
   :hook (python-mode . (lambda ()
@@ -271,21 +259,27 @@
 
 
 ;; major modes for misc lang (mostly markups)
-(use-package web-mode)
-(use-package company-web)
+(use-package web-mode
+  :mode "\\.[jt]sx\\'"
+  :custom
+  (web-mode-content-types-alist '(("jsx" . "\\.[jt]sx\\'")))
+  (web-mode-markup-indent-offset 2)
+  (web-mode-code-indent-offset 2)
+  (web-mode-css-indent-offset 2))
 (use-package emmet-mode
   :custom
   (emmet-indentation 2)
   :hook
-  html-mode)
+  (html-mode web-mode))
+(use-package ssass-mode
+  :mode "\\.sass\\'")
 (use-package yaml-mode
   :hook (yaml-mode . lsp-deferred))
 (use-package toml-mode
   :hook (toml-mode . lsp-deferred))
-(use-package markdown-mode+
+(use-package markdown-mode
   :hook (markdown-mode . lsp-deferred))
 (use-package markdown-preview-mode)
-(use-package css-eldoc)
 
 ;; major modes for config files
 (use-package nginx-mode)
@@ -295,6 +289,7 @@
 
 ;; general tools
 (use-package tramp
+  :straight (:type built-in)
   :defer t
   :config
   ;; (eval-after-load "tramp-sh" '(defun tramp-set-remote-path(vec)))
@@ -316,7 +311,9 @@
   :custom
   (default-input-method "rime"))
 (use-package xterm-color)
-(use-package org)
+(use-package xclip
+  :hook (tty-setup . xclip-mode))
+(use-package org :straight (:type built-in))
 (use-package sql-indent)
 (use-package pass)
 
@@ -400,33 +397,8 @@
   :custom
   (copilot-indent-offset-warning-disable t)
   :config
-  (add-hook 'typescript-mode-hook 'copilot/override-electric-keys)
-  (add-to-list 'lsp-file-watch-ignored-directories "[/\\\\]node_modules\\'")
-  (add-to-list 'lsp-file-watch-ignored-directories "[/\\\\]src-capacitor[/\\\\]android[/\\\\](.+[/\\\\])?build\\'")
-  :ensure t)
+  (add-hook 'typescript-mode-hook 'copilot/override-electric-keys))
 
 
-(use-package vterm :straight t)
-(use-package claude-code
-  :straight (:type git :host github :repo "stevemolitor/claude-code.el" :branch "main" :depth 1
-                   :files ("*.el" (:exclude "images/*")))
-  :custom
-  (claude-code-terminal-backend 'vterm)
-  (claude-code-program "/usr/bin/env")
-  (claude-code-program-switches '("SHELL=/usr/bin/bash" "/usr/bin/bash" "-l" "-c" "claude"))
-  :config
-  (claude-code-mode))
-(use-package claude-code-ide
-  :straight (:type git :host github :repo "manzaltu/claude-code-ide.el")
-  :bind ("C-c C-c" . claude-code-ide-menu)
-  :config
-  (claude-code-ide-emacs-tools-setup))
-(use-package ai-code-interface
-  :straight (:host github :repo "tninja/ai-code-interface.el")
-  :config
-  (ai-code-set-backend  'claude-code-ide) ;; use claude-code-ide as backend
-  ;; Enable global keybinding for the main menu
-  (global-set-key (kbd "C-c a") #'ai-code-menu)
-  ;; Optional: Set up Magit integration for AI commands in Magit popups
-  (with-eval-after-load 'magit
-    (ai-code-magit-setup-transients)))
+;; load last so packages referenced by custom.el are already installed
+(load custom-file)
